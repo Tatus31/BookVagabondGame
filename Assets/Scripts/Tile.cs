@@ -82,9 +82,16 @@ public class Tile : MonoBehaviour
         {
             if (!isCharacterInsideTile)
             {
+                if (Character.Instance.CountCharactersInScene(characterTag) >= 4)
+                {
+                    return;
+                }
+
                 // Instantiate the character prefab at the tile's position
                 Instantiate(characterPrefab, transform.position, Quaternion.identity);
                 Debug.Log(Character.Instance.CountCharactersInScene(characterTag));
+
+                Character.Instance.CountCharactersInScene(characterTag);
             }
         }
     }
