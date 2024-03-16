@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -6,6 +7,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private GameObject characterPrefab;
 
     private Renderer gridRenderer;
+    private GridSystem gridSystem;
     private float originalAlpha;
     private bool isCharacterInsideTile;
     private string characterTag = "Character";
@@ -16,6 +18,9 @@ public class Tile : MonoBehaviour
     {
         gridRenderer = GetComponent<Renderer>();
         originalAlpha = gridRenderer.material.color.a;
+
+        //Make a script to hold them all!!!
+        gridSystem = GameObject.FindGameObjectWithTag("Grid").gameObject.GetComponent<GridSystem>();
     }
 
     void Update()
@@ -78,7 +83,7 @@ public class Tile : MonoBehaviour
     public void SpawnPlayerCharacterInsideTile()
     {
 
-        if (PlayerInput.Instance.LeftClickClicked && IsSomethingIntheTile(mousePosition))
+        if (PlayerInput.Instance.LeftClickClicked && IsSomethingIntheTile(mousePosition) && CheckIfPlayerControlledTile())
         {
             if (!isCharacterInsideTile)
             {
@@ -94,5 +99,15 @@ public class Tile : MonoBehaviour
                 Character.Instance.CountCharactersInScene(characterTag);
             }
         }
+    }
+
+    private bool CheckIfPlayerControlledTile()
+    {
+        if (transform.position.x >= gridSystem.GetWidth())
+            return true;
+        else if (transform.position.x < gridSystem.GetWidth())
+            return false;
+
+        else return false;
     }
 }

@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
     {
         Instance = this;
 
+        //Make a script to hold them all!!!
         gridSystem = GameObject.FindGameObjectWithTag("Grid").gameObject.GetComponent<GridSystem>();
 
         if (gridSystem != null)

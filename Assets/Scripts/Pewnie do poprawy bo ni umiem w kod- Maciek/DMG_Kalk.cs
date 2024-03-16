@@ -5,15 +5,15 @@ using UnityEngine;
 public class DMG_Kalk : MonoBehaviour
 {
     [SerializeField]
-    int DMG_Gracz;
+    int dmg_Gracz;
     [SerializeField]
-    int DMG_Wrog;
+    int dmg_Wrog;
     [SerializeField]
-    int Hp_Gracz;
+    int hp_Gracz;
     [SerializeField]
-    int Hp_Wrog;
+    int hp_Wrog;
     [SerializeField]
-    GameObject Sfera;
+    GameObject sfera;
 
     // Start is called before the first frame update
     void Start()
@@ -24,13 +24,13 @@ public class DMG_Kalk : MonoBehaviour
 
     void Update()
     {
-        if (Hp_Gracz > 0 & Hp_Wrog > 0 & DMG_Gracz > DMG_Wrog)
+        if (hp_Gracz > 0 && hp_Wrog > 0 && dmg_Gracz > dmg_Wrog)
         {
             //Hp_Wrog = Hp_Wrog - DMG_Gracz;
             transform.position = new Vector3(11, 3, 5);
 
         }
-        else if (Hp_Gracz > 0 & Hp_Wrog > 0 & DMG_Wrog > DMG_Gracz)
+        else if (hp_Gracz > 0 && hp_Wrog > 0 & dmg_Wrog > dmg_Gracz)
         {
             //Hp_Gracz = Hp_Gracz - DMG_Wrog;
             transform.position = new Vector3(11, 3, 12);
