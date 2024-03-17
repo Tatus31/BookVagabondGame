@@ -1,10 +1,10 @@
-using System;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
     [SerializeField] private float highlightAlpha;
     [SerializeField] private GameObject characterPrefab;
+    [SerializeField] private int tileValue;
 
     private Renderer gridRenderer;
     private GridSystem gridSystem;
@@ -14,6 +14,8 @@ public class Tile : MonoBehaviour
 
     private Vector3 mousePosition;
     private Vector3 characterPosition;
+    
+
     void Start()
     {
         gridRenderer = GetComponent<Renderer>();
@@ -30,7 +32,7 @@ public class Tile : MonoBehaviour
     }
 
     // Check if something is inside the Tile
-    private bool IsSomethingIntheTile(Vector3 position)
+    private bool IsSomethingInsideTile(Vector3 position)
     {
         Collider collider = GetComponent<Collider>();
         if (collider != null)
@@ -46,7 +48,7 @@ public class Tile : MonoBehaviour
     {
         mousePosition = MouseWorldPosition.Instance.GetMouseWorldPosition();
 
-        if (IsSomethingIntheTile(mousePosition))
+        if (IsSomethingInsideTile(mousePosition))
         {
             // Mouse is over the grid sets the grid to highlightAlpha value
             Color highlightColor = gridRenderer.material.color;
@@ -69,7 +71,7 @@ public class Tile : MonoBehaviour
     {
         characterPosition = Character.Instance.GetCharacterPosition();
 
-        if (IsSomethingIntheTile(characterPosition))
+        if (IsSomethingInsideTile(characterPosition))
         {
             //Debug.Log($"Character Inside tile {transform.name}");
             isCharacterInsideTile = true;
@@ -82,8 +84,7 @@ public class Tile : MonoBehaviour
 
     public void SpawnPlayerCharacterInsideTile()
     {
-
-        if (PlayerInput.Instance.LeftClickClicked && IsSomethingIntheTile(mousePosition) && CheckIfPlayerControlledTile())
+        if (PlayerInput.Instance.LeftClickClicked && IsSomethingInsideTile(mousePosition) && CheckIfPlayerControlledTile())
         {
             if (!isCharacterInsideTile)
             {
@@ -101,6 +102,7 @@ public class Tile : MonoBehaviour
         }
     }
 
+    //Checks if placing player characters is allowed inside area
     private bool CheckIfPlayerControlledTile()
     {
         if (transform.position.x >= gridSystem.GetWidth())
@@ -109,5 +111,15 @@ public class Tile : MonoBehaviour
             return false;
 
         else return false;
+    }
+
+    public void SetTileValue(int value)
+    {
+        tileValue = value;
+    }
+
+    public int GetTileValue()
+    {
+        return tileValue;
     }
 }

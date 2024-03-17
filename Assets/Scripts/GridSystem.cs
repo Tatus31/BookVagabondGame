@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GridSystem : MonoBehaviour
@@ -15,8 +13,6 @@ public class GridSystem : MonoBehaviour
     private float _tileOffset = 0.01f;
     public float TileOffset { get { return _tileOffset; } private set { _tileOffset = value; } }
 
-    private Tile placedTile;
-
     private void Start()
     {
         GenerateGrid();
@@ -24,12 +20,19 @@ public class GridSystem : MonoBehaviour
 
     private void GenerateGrid()
     {
+        float centerPosition = (width - 1) * cellSize * 0.5f;
+
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
             {
-                placedTile = Instantiate(tilePrefab, new Vector3(x * cellSize, TileOffset, z * cellSize), Quaternion.identity);
+                float distanceFromCenter = Mathf.Abs(x * cellSize - centerPosition);
+                int tileValue = (int)distanceFromCenter;
+
+                Tile placedTile = Instantiate(tilePrefab, new Vector3(x * cellSize, TileOffset, z * cellSize), Quaternion.identity);
                 placedTile.name = $"Tile ({x},{z})";
+
+                placedTile.SetTileValue(tileValue);
             }
         }
     }
@@ -47,5 +50,5 @@ public class GridSystem : MonoBehaviour
     public int GetCellSize()
     {
         return cellSize;
-    } 
+    }
 }
