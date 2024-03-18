@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Tile : MonoBehaviour
 {
@@ -11,10 +12,11 @@ public class Tile : MonoBehaviour
     private float originalAlpha;
     private bool isCharacterInsideTile;
     private string characterTag = "Character";
+    private int maxCharacterNumber = 4;
 
     private Vector3 mousePosition;
     private Vector3 characterPosition;
-    
+
 
     void Start()
     {
@@ -88,7 +90,7 @@ public class Tile : MonoBehaviour
         {
             if (!isCharacterInsideTile)
             {
-                if (Character.Instance.CountCharactersInScene(characterTag) >= 4)
+                if (Character.Instance.CountCharactersInScene(characterTag) >= maxCharacterNumber)
                 {
                     return;
                 }
@@ -123,3 +125,4 @@ public class Tile : MonoBehaviour
         return tileValue;
     }
 }
+

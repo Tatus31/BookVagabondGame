@@ -21,12 +21,22 @@ public class PlayerInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("left mouse clicked!");
+            //Debug.Log("left mouse clicked!");
             LeftClickClicked = true;
         }
         else
         {
             LeftClickClicked = false;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            //Debug.Log("right mouse clicked!");
+            RightClickClicked = true;
+        }
+        else
+        {
+            RightClickClicked = false;
         }
     }
 }

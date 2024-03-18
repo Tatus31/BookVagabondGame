@@ -43,7 +43,6 @@ public class Character : MonoBehaviour
         transform.position = new Vector3(transform.position.x, gridSystem.TileOffset, transform.position.z);
     }
 
-    //Count Characters in Scene
     public int CountCharactersInScene(string tag)
     {
         GameObject[] characters = GameObject.FindGameObjectsWithTag(tag);
