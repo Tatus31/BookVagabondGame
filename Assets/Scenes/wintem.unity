@@ -230,11 +230,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'HP: 10
-
-    HPEnem: 10
-
-'
+  m_text: "HP: 10\nHPEnem: 10\nHuj, nie umiem zrobi\u0107. Mo\u017Cna zmienia\u0107
+    \n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3224,6 +3221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 10
   dmg: 50
+  energia: 0
   Ikona_Atk: {fileID: 1355711220}
   Ikona_Def: {fileID: 2134765169}
   Ikona_Dge: {fileID: 1370922793}
