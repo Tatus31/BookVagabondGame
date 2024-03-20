@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 682d26c8f15485040b7ccbe7e55c732b, type: 3}
+  m_Name: TestCharacter 2
+  m_EditorClassIdentifier: 
+  Name: character test 2
+  Description: "jaki\u015B huj "
+  Mana: 0
+  Health: 0
+  AttackSpeed: 0

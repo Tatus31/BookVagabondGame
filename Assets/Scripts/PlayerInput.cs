@@ -7,10 +7,14 @@ public class PlayerInput : MonoBehaviour
     public static PlayerInput Instance;
 
     private bool _leftClickClicked;
+    private bool _leftClickHeld;
+    private bool _leftClickUp;
     private bool _rightClickClicked;
 
     public bool LeftClickClicked {get { return _leftClickClicked;} private set { _leftClickClicked = value; } }
     public bool RightClickClicked { get { return _rightClickClicked; } private set { _rightClickClicked = value; } }
+    public bool LeftClickHeld { get { return _leftClickHeld; } private set { _leftClickHeld = value; } }
+    public bool LeftClickUp { get { return _leftClickUp; } private set { _leftClickUp = value; } }
 
     private void Awake()
     {
@@ -19,24 +23,44 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        switch (Input.GetMouseButtonDown(0))
         {
-            //Debug.Log("left mouse clicked!");
-            LeftClickClicked = true;
-        }
-        else
-        {
-            LeftClickClicked = false;
+            case true:
+                LeftClickClicked = true;
+                break;
+            default:
+                LeftClickClicked = false;
+                break;
         }
 
-        if (Input.GetMouseButtonDown(1))
+        switch (Input.GetMouseButton(0))
         {
-            //Debug.Log("right mouse clicked!");
-            RightClickClicked = true;
+            case true:
+                LeftClickHeld = true;
+                break;
+            default:
+                LeftClickHeld = false;
+                break;
         }
-        else
+
+        switch (Input.GetMouseButtonUp(0))
         {
-            RightClickClicked = false;
+            case true:
+                LeftClickUp = true;
+                break;
+            default:
+                LeftClickUp = false;
+                break;
+        }
+
+        switch (Input.GetMouseButtonDown(1))
+        {
+            case true:
+                RightClickClicked = true;
+                break;
+            default:
+                RightClickClicked = false;
+                break;
         }
     }
 }
