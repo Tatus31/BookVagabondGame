@@ -38,7 +38,6 @@ public class Tile : MonoBehaviour
         return false;
     }
 
-    //Check if mouse is inside a tile 
     private void IsMouseInsideTile()
     {
         Vector3 mousePosition = MouseWorldPosition.Instance.GetMouseWorldPosition();
@@ -72,7 +71,8 @@ public class Tile : MonoBehaviour
                 return; 
             }
             GameObject newCharacter = Instantiate(characterPrefab, transform.position, Quaternion.identity);
-            charactersOnTile.Add(newCharacter);           
+            charactersOnTile.Add(newCharacter);
+            CharactersAndEnemiesList.Instance.characters.Add(newCharacter);
         }
         else
         {

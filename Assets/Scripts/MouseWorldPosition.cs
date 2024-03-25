@@ -7,6 +7,8 @@ public class MouseWorldPosition : MonoBehaviour
     [SerializeField] private LayerMask InteractableLayerMask;
     [SerializeField] private GameObject mousePositionVisual;
 
+    private Ray ray;
+
     private void Awake()
     {
         Instance = this;
@@ -14,12 +16,18 @@ public class MouseWorldPosition : MonoBehaviour
 
     public Vector3 GetMouseWorldPosition()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, InteractableLayerMask);
 
         mousePositionVisual.transform.position = raycastHit.point;
         // Debug.Log(raycastHit.point);
 
         return raycastHit.point;
+    }
+
+    public Ray GetMouseRayWorld()
+    {
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        return ray;
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ArrowDragIndicator : MonoBehaviour
 {
+    // later when ui check if on attack skill + rework this shitstain
+
     [SerializeField] AnimationCurve animationCurve;
 
     private Vector3 startPosition;
@@ -13,13 +15,12 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerInput.Instance.LeftClickClicked)
+        if (PlayerInput.Instance.LeftClickClicked && CharacterSelection.Instance.CharacterSelected)
         {
             if(lineRenderer == null)
             {
                 lineRenderer = gameObject.AddComponent<LineRenderer>();
             }
-
             lineRenderer.enabled = true;    
             lineRenderer.positionCount = 2;
             startPosition = MouseWorldPosition.Instance.GetMouseWorldPosition();
