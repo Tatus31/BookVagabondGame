@@ -1,43 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowDragIndicator : MonoBehaviour
 {
-    // later when ui check if on attack skill + rework this shitstain
-
     [SerializeField] AnimationCurve animationCurve;
-
-    private Vector3 startPosition;
-    private Vector3 endPosition;
-
-    private LineRenderer lineRenderer;
 
     private void Update()
     {
-        if (PlayerInput.Instance.LeftClickClicked && CharacterSelection.Instance.CharacterSelected)
+        if (PlayerInput.Instance.LeftClickClicked && CharacterSelection.Instance.AnyCharacterSelected && TargetingSystem.Instance.CurrentTarget != null)
         {
-            if(lineRenderer == null)
-            {
-                lineRenderer = gameObject.AddComponent<LineRenderer>();
-            }
-            lineRenderer.enabled = true;    
-            lineRenderer.positionCount = 2;
-            startPosition = MouseWorldPosition.Instance.GetMouseWorldPosition();
-            lineRenderer.SetPosition(0, startPosition);
+            GameObject lineObject = new GameObject("LineRenderer");
+            LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
             lineRenderer.useWorldSpace = true;
-
             lineRenderer.widthCurve = animationCurve;
             lineRenderer.numCapVertices = 10;
-        }
-        if (PlayerInput.Instance.LeftClickHeld)
-        {
-            endPosition = MouseWorldPosition.Instance.GetMouseWorldPosition();
-            lineRenderer.SetPosition(1, endPosition);
-        }
-        if (PlayerInput.Instance.LeftClickUp)
-        {
-            lineRenderer.enabled = false;
+
+            Vector3 characterPosition = Character.Instance.GetCharacterPosition();
+            Vector3 enemyPosition = TargetingSystem.Instance.CurrentTarget.transform.position;
+
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, characterPosition);
+            lineRenderer.SetPosition(1, enemyPosition);
         }
     }
 }

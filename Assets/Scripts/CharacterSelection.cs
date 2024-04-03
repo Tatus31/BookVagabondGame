@@ -9,8 +9,8 @@ public class CharacterSelection : MonoBehaviour
     [Space(10)]
     [SerializeField] private int characterSelectionLimit;
 
-    private bool _characterSelected;
-    public bool CharacterSelected { get { return _characterSelected; } private set { _characterSelected = value; } }
+    private bool _anyCharacterSelected;
+    public bool AnyCharacterSelected { get { return _anyCharacterSelected; } private set { _anyCharacterSelected = value; } }
 
     private void Awake()
     {
@@ -31,7 +31,7 @@ public class CharacterSelection : MonoBehaviour
 
     private void SelectCharacter()
     {
-        GameObject character = CharacterSelectionCheck();
+        GameObject character = SelectionCheck();
         if (character != null && character.CompareTag("Character") && !selectedCharacters.Contains(character) && IsCharacterSelected())
         {
             selectedCharacters.Add(character);
@@ -41,7 +41,7 @@ public class CharacterSelection : MonoBehaviour
 
     private void DeselectCharacter()
     {
-        GameObject character = CharacterSelectionCheck();
+        GameObject character = SelectionCheck();
         if (character != null && character.CompareTag("Character") && selectedCharacters.Contains(character) && !IsCharacterSelected())
         {
             selectedCharacters.Remove(character);
@@ -49,7 +49,17 @@ public class CharacterSelection : MonoBehaviour
         }
     }
 
-    private GameObject CharacterSelectionCheck()
+    private bool IsCharacterSelected()
+    {
+        return selectedCharacters.Count < characterSelectionLimit;
+    }
+
+    private void UpdateCharacterSelectedStatus()
+    {
+        AnyCharacterSelected = selectedCharacters.Count > 0;
+    }
+
+    public GameObject SelectionCheck()
     {
         RaycastHit hit;
         Ray ray = MouseWorldPosition.Instance.GetMouseRayWorld();
@@ -60,15 +70,5 @@ public class CharacterSelection : MonoBehaviour
         }
 
         return null;
-    }
-
-    private bool IsCharacterSelected()
-    {
-        return selectedCharacters.Count < characterSelectionLimit;
-    }
-
-    private void UpdateCharacterSelectedStatus()
-    {
-        CharacterSelected = selectedCharacters.Count > 0;
     }
 }

@@ -34,8 +34,7 @@ public class Character : MonoBehaviour
 
     public Vector3 GetCharacterPosition()
     {
-        Vector3 characterPosition = transform.position;
-        return characterPosition;
+        return transform.position;
     }
 
     private void SetCharacterOffset()
