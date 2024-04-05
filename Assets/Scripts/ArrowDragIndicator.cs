@@ -6,7 +6,7 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerInput.Instance.LeftClickClicked && CharacterSelection.Instance.AnyCharacterSelected && TargetingSystem.Instance.CurrentTarget != null)
+        if (PlayerInput.Instance.LeftClickClicked && CharacterSelection.Instance.CurrentCharacterSelected && TargetingSystem.Instance.TargetList.Count >= 1)
         {
             GameObject lineObject = new GameObject("LineRenderer");
             LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
@@ -14,8 +14,8 @@ public class ArrowDragIndicator : MonoBehaviour
             lineRenderer.widthCurve = animationCurve;
             lineRenderer.numCapVertices = 10;
 
-            Vector3 characterPosition = Character.Instance.GetCharacterPosition();
-            Vector3 enemyPosition = TargetingSystem.Instance.CurrentTarget.transform.position;
+            Vector3 characterPosition = CharacterSelection.Instance.GetSelectedCharacterPosition();
+            Vector3 enemyPosition = Enemy.Instance.GetSelectedEnemyPosition();
 
             lineRenderer.positionCount = 2;
             lineRenderer.SetPosition(0, characterPosition);

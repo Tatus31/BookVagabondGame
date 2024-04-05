@@ -9,8 +9,8 @@ public class CharacterSelection : MonoBehaviour
     [Space(10)]
     [SerializeField] private int characterSelectionLimit;
 
-    private bool _anyCharacterSelected;
-    public bool AnyCharacterSelected { get { return _anyCharacterSelected; } private set { _anyCharacterSelected = value; } }
+    private GameObject _currentCharacterSelected;
+    public GameObject CurrentCharacterSelected { get { return _currentCharacterSelected; } private set { _currentCharacterSelected = value; } }
 
     private void Awake()
     {
@@ -56,7 +56,15 @@ public class CharacterSelection : MonoBehaviour
 
     private void UpdateCharacterSelectedStatus()
     {
-        AnyCharacterSelected = selectedCharacters.Count > 0;
+        if (selectedCharacters.Count > 0)
+        {
+            _currentCharacterSelected = selectedCharacters[0];
+            Debug.Log(_currentCharacterSelected.name);
+        }
+        else
+        {
+            _currentCharacterSelected = null;
+        }
     }
 
     public GameObject SelectionCheck()
@@ -70,5 +78,10 @@ public class CharacterSelection : MonoBehaviour
         }
 
         return null;
+    }
+
+    public Vector3 GetSelectedCharacterPosition()
+    {
+        return _currentCharacterSelected.transform.position;
     }
 }

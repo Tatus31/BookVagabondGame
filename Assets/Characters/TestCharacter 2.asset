@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 682d26c8f15485040b7ccbe7e55c732b, type: 3}
   m_Name: TestCharacter 2
   m_EditorClassIdentifier: 
-  Name: character test 2
+  Name: CharacterVisual
   Description: "jaki\u015B huj "
   Mana: 0
   Health: 0

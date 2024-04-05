@@ -10,6 +10,8 @@ public class Character : MonoBehaviour
 
     private GridSystem gridSystem;
 
+    public ClassCharacter character;
+
     private void Awake()
     {
         Instance = this;
