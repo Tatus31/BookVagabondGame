@@ -65,14 +65,21 @@ public class Tile : MonoBehaviour
     {
         if (charactersOnTile.Count < 1 && CheckIfPlayerControlledTile())
         {
-            if (Character.Instance.CountCharactersInScene("Character") >= 4)
+            if (Character.Instance != null && Character.Instance.CountCharactersInScene("Character") >= 4)
             {
                 Debug.Log("Maximum characters reached in the scene.");
-                return; 
+                return;
             }
-            GameObject newCharacter = Instantiate(characterPrefab, transform.position, Quaternion.identity);
-            charactersOnTile.Add(newCharacter);
-            CharactersAndEnemiesList.Instance.characters.Add(newCharacter);
+            if (characterPrefab != null)
+            {
+                GameObject newCharacter = Instantiate(characterPrefab, transform.position, Quaternion.identity);
+                charactersOnTile.Add(newCharacter);
+                CharactersAndEnemiesList.Instance.characters.Add(newCharacter);
+            }
+            else
+            {
+                Debug.LogError("Character prefab is not assigned in the Tile script.");
+            }
         }
         else
         {

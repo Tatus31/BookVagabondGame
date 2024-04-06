@@ -1,23 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class TargetingSystem : MonoBehaviour
 {
-    //should work fine with more diffrent characters (it fucking didnt)
     public static TargetingSystem Instance;
 
-    public int targetTest;
+    public event Action AllTargetsReached;
 
-    private Dictionary<GameObject, GameObject> _targetList = new Dictionary<GameObject, GameObject>();
-    public Dictionary<GameObject, GameObject> TargetList { get { return _targetList; } private set { _targetList = value; } }
+    private Dictionary<GameObject, GameObject> _characterTargets = new Dictionary<GameObject, GameObject>();
+    public Dictionary<GameObject, GameObject> CharacterTargets { get { return _characterTargets; } }
 
-    //testing
+    private bool _isMoving = false;
+    public bool IsMoving { get { return _isMoving; } }
+
+    [SerializeField] private float nextCharacterMove;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float stoppingDistance;
-
-    private bool isMoving = false;
 
     private void Awake()
     {
@@ -26,13 +26,6 @@ public class TargetingSystem : MonoBehaviour
 
     private void Update()
     {
-        targetTest = _targetList.Values.Count;
-
-        if(CharacterSelection.Instance.CurrentCharacterSelected == null)
-        {
-            return;
-        }
-
         if (PlayerInput.Instance.LeftClickClicked)
         {
             SelectEnemy();
@@ -42,28 +35,30 @@ public class TargetingSystem : MonoBehaviour
             DeselectEnemy();
         }
 
-        //testing will change to a specific point probably
-        if (Input.GetKeyDown(KeyCode.Space) && _targetList.Count > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && _characterTargets.Count > 0 && !_isMoving)
         {
-            Debug.Log("Going");
-            isMoving = true;
-        }
-
-        if (isMoving && _targetList.Count > 0)
-        {
-            MoveTowardsTargets();
+            OnAllTargetsReached();
+            StartCoroutine(MoveTowardsTargets());
         }
     }
+
     private void SelectEnemy()
     {
         GameObject enemy = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemy != null && enemy.CompareTag("Enemy") && !_targetList.ContainsKey(CharacterSelection.Instance.CurrentCharacterSelected))
+        if (enemy != null && enemy.CompareTag("Enemy"))
         {
-            _targetList.Add(CharacterSelection.Instance.CurrentCharacterSelected,enemy);            
-            foreach (KeyValuePair<GameObject, GameObject> go in _targetList)
+            GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
+            if (selectedCharacter != null)
             {
-                Debug.Log($"character: {go.Key.name} enemy: {go.Value.name}");
+                if (_characterTargets.ContainsKey(selectedCharacter))
+                {
+                    _characterTargets[selectedCharacter] = enemy;
+                }
+                else
+                {
+                    _characterTargets.Add(selectedCharacter, enemy);
+                }
             }
         }
     }
@@ -72,48 +67,100 @@ public class TargetingSystem : MonoBehaviour
     {
         GameObject enemy = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemy != null && _targetList.ContainsValue(enemy))
+        if (enemy != null)
         {
-            _targetList.Remove(CharacterSelection.Instance.CurrentCharacterSelected,out enemy);
+            GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
+            if (selectedCharacter != null && _characterTargets.ContainsKey(selectedCharacter) && _characterTargets[selectedCharacter] == enemy)
+            {
+                _characterTargets.Remove(selectedCharacter);
+            }
         }
     }
 
-    //testing
-    private void MoveTowardsTargets()
+    private IEnumerator MoveTowardsTargets()
     {
-        List<GameObject> charactersToRemove = new List<GameObject>();
+        _isMoving = true;
 
-        foreach (var pair in _targetList)
+        List<CharacterWithSpeed> charactersWithSpeed = new List<CharacterWithSpeed>();
+
+        foreach (var pair in _characterTargets)
         {
             GameObject character = pair.Key;
             GameObject enemy = pair.Value;
 
-            if (enemy != null)
+            if (character != null && enemy != null)
             {
-                Vector3 targetPosition = enemy.transform.position;
-                Vector3 direction = (targetPosition - character.transform.position).normalized;
-                float distanceToTarget = Vector3.Distance(character.transform.position, targetPosition);
-
-                if (distanceToTarget > stoppingDistance)
-                {
-                    character.transform.position += direction * moveSpeed * Time.deltaTime;
-                }
-                else
-                {
-                    charactersToRemove.Add(character);
-                }
+                int speed = GetCharacterSpeed(character);
+                charactersWithSpeed.Add(new CharacterWithSpeed(character, speed));
             }
         }
 
-        foreach (var character in charactersToRemove)
+        charactersWithSpeed.Sort((a, b) => a.Speed.CompareTo(b.Speed));
+
+        foreach (var characterWithSpeed in charactersWithSpeed)
         {
-            _targetList.Remove(character);
+            GameObject character = characterWithSpeed.Character;
+            GameObject enemy = _characterTargets[character];
+
+            if (enemy != null)
+            {
+                while (Vector3.Distance(character.transform.position, enemy.transform.position) > stoppingDistance)
+                {
+                    Vector3 targetPosition = enemy.transform.position;
+                    Vector3 direction = (targetPosition - character.transform.position).normalized;
+                    character.transform.position += direction * moveSpeed * Time.deltaTime;
+                    yield return null;
+                }
+            }
+
+            yield return new WaitForSeconds(nextCharacterMove);
         }
 
-        if (_targetList.Count == 0)
+        _isMoving = false;
+        Debug.Log("All targets reached");    
+    }
+
+
+    private void OnAllTargetsReached()
+    {
+        AllTargetsReached?.Invoke();
+    }
+
+    private int GetCharacterSpeed(GameObject character)
+    {
+        CharacterSpeed characterSpeedScript = character.GetComponent<CharacterSpeed>();
+
+        if (characterSpeedScript != null)
         {
-            isMoving = false;
-            Debug.Log("All targets reached");
+            return characterSpeedScript.GetCharacterSpeed();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    public GameObject GetTargetForCharacter(GameObject character)
+    {
+        if (_characterTargets.ContainsKey(character))
+        {
+            return _characterTargets[character];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private class CharacterWithSpeed
+    {
+        public GameObject Character { get; private set; }
+        public int Speed { get; private set; }
+
+        public CharacterWithSpeed(GameObject character, int speed)
+        {
+            Character = character;
+            Speed = speed;
         }
     }
 }

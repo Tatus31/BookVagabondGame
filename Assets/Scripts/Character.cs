@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,8 +10,6 @@ public class Character : MonoBehaviour
     public static Character Instance;
 
     private GridSystem gridSystem;
-
-    public ClassCharacter character;
 
     private void Awake()
     {

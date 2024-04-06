@@ -115,7 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4121633928901498468}
   - component: {fileID: 4572801150314267821}
-  - component: {fileID: 6904150031815329136}
+  - component: {fileID: -8741330927002801345}
   m_Layer: 0
   m_Name: CharacterPrefab
   m_TagString: Untagged
@@ -151,8 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f86162e26f3a75c488731633156d3e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 11400000, guid: 0b0aefc6ba33d254ba5c20d9424aff4a, type: 2}
---- !u!114 &6904150031815329136
+--- !u!114 &-8741330927002801345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,10 +160,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5769024389884248481}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a96f0793f462a0f49a7a0b61954c9011, type: 3}
+  m_Script: {fileID: 11500000, guid: a9da3af55424c9644a750c415ab9479a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentTarget: {fileID: 0}
-  moveSpeed: 5
-  stoppingDistance: 1.25
-  characterName: 
+  characterSpeed: 0
