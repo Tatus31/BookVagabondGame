@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetingSystem : MonoBehaviour
+public class PlayerTargetingSystem : MonoBehaviour
 {
-    public static TargetingSystem Instance;
+    public static PlayerTargetingSystem Instance;
 
     public event Action AllTargetsReached;
 
@@ -95,10 +95,12 @@ public class TargetingSystem : MonoBehaviour
             }
         }
 
-        charactersWithSpeed.Sort((a, b) => a.Speed.CompareTo(b.Speed));
+        charactersWithSpeed.Sort((a, b) => b.Speed.CompareTo(a.Speed));
 
         foreach (var characterWithSpeed in charactersWithSpeed)
         {
+            Debug.Log(characterWithSpeed.Speed);
+
             GameObject character = characterWithSpeed.Character;
             GameObject enemy = _characterTargets[character];
 
@@ -136,6 +138,7 @@ public class TargetingSystem : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning("CharacterSpeed not on character: " + character.name);
             return 0;
         }
     }

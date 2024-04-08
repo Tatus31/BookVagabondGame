@@ -11,20 +11,20 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Start()
     {
-        TargetingSystem.Instance.AllTargetsReached += OnAllTargetsReached;
+        PlayerTargetingSystem.Instance.AllTargetsReached += OnAllTargetsReached;
     }
 
     private void OnDestroy()
     {
-        TargetingSystem.Instance.AllTargetsReached -= OnAllTargetsReached;
+        PlayerTargetingSystem.Instance.AllTargetsReached -= OnAllTargetsReached;
     }
 
     private void Update()
     {
-        if (CharacterSelection.Instance.CurrentCharacterSelected != null && TargetingSystem.Instance.CharacterTargets != null)
+        if (CharacterSelection.Instance.CurrentCharacterSelected != null && PlayerTargetingSystem.Instance.CharacterTargets != null)
         {
             GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
-            GameObject selectedEnemy = TargetingSystem.Instance.GetTargetForCharacter(selectedCharacter);
+            GameObject selectedEnemy = PlayerTargetingSystem.Instance.GetTargetForCharacter(selectedCharacter);
 
             if (selectedCharacter != null && selectedEnemy != null)
             {
@@ -63,7 +63,7 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void RemoveLineRenderer()
     {
-        if (lineObject != null && !TargetingSystem.Instance.IsMoving)
+        if (lineObject != null && !PlayerTargetingSystem.Instance.IsMoving)
         {
             Destroy(lineObject);
             lineObject = null;

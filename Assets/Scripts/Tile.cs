@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
+using System;
 
 public class Tile : MonoBehaviour
 {
+    public static Tile Instance { get; private set; }
+
     [SerializeField] private float highlightAlpha;
     [SerializeField] private GameObject characterPrefab;
     [SerializeField] private int tileValue;
@@ -12,7 +15,16 @@ public class Tile : MonoBehaviour
     private GridSystem gridSystem;
     private float originalAlpha;
 
+    private bool _allCharactersPlaced;
+
+    public bool AllCharactersPlaced { get { return _allCharactersPlaced; } private set { _allCharactersPlaced = value; } }
+
     private List<GameObject> charactersOnTile = new List<GameObject>();
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -67,7 +79,8 @@ public class Tile : MonoBehaviour
         {
             if (Character.Instance != null && Character.Instance.CountCharactersInScene("Character") >= 4)
             {
-                Debug.Log("Maximum characters reached in the scene.");
+                _allCharactersPlaced = true;
+                Debug.Log("Maximum characters reached");
                 return;
             }
             if (characterPrefab != null)
@@ -78,12 +91,12 @@ public class Tile : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Character prefab is not assigned in the Tile script.");
+                Debug.LogError("Character prefab is not assigned");
             }
         }
         else
         {
-            Debug.Log("Maximum characters reached on this tile.");
+            Debug.Log("Maximum characters reached on tile");
         }
     }
 
@@ -111,4 +124,5 @@ public class Tile : MonoBehaviour
     {
         return tileValue;
     }
+
 }
