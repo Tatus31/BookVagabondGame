@@ -3,6 +3,7 @@ using UnityEngine;
 public class ArrowDragIndicator : MonoBehaviour
 {
     [SerializeField] AnimationCurve animationCurve;
+    [SerializeField] Material lineMaterial;
 
     private GameObject lineObject;
     private LineRenderer lineRenderer;
@@ -11,18 +12,20 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Start()
     {
-        PlayerTargetingSystem.Instance.AllTargetsReached += OnAllTargetsReached;
+
+        Movement.Instance.AllTargetsReached += OnAllTargetsReached;
     }
 
     private void OnDestroy()
     {
-        PlayerTargetingSystem.Instance.AllTargetsReached -= OnAllTargetsReached;
+        Movement.Instance.AllTargetsReached -= OnAllTargetsReached;
     }
 
     private void Update()
     {
         if (CharacterSelection.Instance.CurrentCharacterSelected != null && PlayerTargetingSystem.Instance.CharacterTargets != null)
         {
+
             GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
             GameObject selectedEnemy = PlayerTargetingSystem.Instance.GetTargetForCharacter(selectedCharacter);
 
@@ -54,6 +57,8 @@ public class ArrowDragIndicator : MonoBehaviour
             lineRenderer.useWorldSpace = true;
             lineRenderer.widthCurve = animationCurve;
             lineRenderer.numCapVertices = 10;
+
+            lineRenderer.material = lineRenderer.material;
         }
 
         lineRenderer.positionCount = 2;
@@ -63,7 +68,7 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void RemoveLineRenderer()
     {
-        if (lineObject != null && !PlayerTargetingSystem.Instance.IsMoving)
+        if (lineObject != null && !Movement.Instance.IsMoving)
         {
             Destroy(lineObject);
             lineObject = null;

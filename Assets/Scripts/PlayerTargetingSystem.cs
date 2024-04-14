@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,17 +5,8 @@ public class PlayerTargetingSystem : MonoBehaviour
 {
     public static PlayerTargetingSystem Instance;
 
-    public event Action AllTargetsReached;
-
     private Dictionary<GameObject, GameObject> _characterTargets = new Dictionary<GameObject, GameObject>();
     public Dictionary<GameObject, GameObject> CharacterTargets { get { return _characterTargets; } }
-
-    private bool _isMoving = false;
-    public bool IsMoving { get { return _isMoving; } }
-
-    [SerializeField] private float nextCharacterMove;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float stoppingDistance;
 
     private void Awake()
     {
@@ -26,6 +15,12 @@ public class PlayerTargetingSystem : MonoBehaviour
 
     private void Update()
     {
+        if (PlayerInput.Instance == null || CharacterSelection.Instance == null)
+        {
+            Debug.LogWarning("PlayerInput or CharacterSelection instance not set.");
+            return;
+        }
+
         if (PlayerInput.Instance.LeftClickClicked)
         {
             SelectEnemy();
@@ -34,13 +29,8 @@ public class PlayerTargetingSystem : MonoBehaviour
         {
             DeselectEnemy();
         }
-
-        if (Input.GetKeyDown(KeyCode.Space) && _characterTargets.Count > 0 && !_isMoving)
-        {
-            OnAllTargetsReached();
-            StartCoroutine(MoveTowardsTargets());
-        }
     }
+
 
     private void SelectEnemy()
     {
@@ -51,14 +41,8 @@ public class PlayerTargetingSystem : MonoBehaviour
             GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
             if (selectedCharacter != null)
             {
-                if (_characterTargets.ContainsKey(selectedCharacter))
-                {
-                    _characterTargets[selectedCharacter] = enemy;
-                }
-                else
-                {
-                    _characterTargets.Add(selectedCharacter, enemy);
-                }
+                _characterTargets[selectedCharacter] = enemy;
+                Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
             }
         }
     }
@@ -73,75 +57,11 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (selectedCharacter != null && _characterTargets.ContainsKey(selectedCharacter) && _characterTargets[selectedCharacter] == enemy)
             {
                 _characterTargets.Remove(selectedCharacter);
+                Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
             }
         }
     }
 
-    private IEnumerator MoveTowardsTargets()
-    {
-        _isMoving = true;
-
-        List<CharacterWithSpeed> charactersWithSpeed = new List<CharacterWithSpeed>();
-
-        foreach (var pair in _characterTargets)
-        {
-            GameObject character = pair.Key;
-            GameObject enemy = pair.Value;
-
-            if (character != null && enemy != null)
-            {
-                int speed = GetCharacterSpeed(character);
-                charactersWithSpeed.Add(new CharacterWithSpeed(character, speed));
-            }
-        }
-
-        charactersWithSpeed.Sort((a, b) => b.Speed.CompareTo(a.Speed));
-
-        foreach (var characterWithSpeed in charactersWithSpeed)
-        {
-            Debug.Log(characterWithSpeed.Speed);
-
-            GameObject character = characterWithSpeed.Character;
-            GameObject enemy = _characterTargets[character];
-
-            if (enemy != null)
-            {
-                while (Vector3.Distance(character.transform.position, enemy.transform.position) > stoppingDistance)
-                {
-                    Vector3 targetPosition = enemy.transform.position;
-                    Vector3 direction = (targetPosition - character.transform.position).normalized;
-                    character.transform.position += direction * moveSpeed * Time.deltaTime;
-                    yield return null;
-                }
-            }
-
-            yield return new WaitForSeconds(nextCharacterMove);
-        }
-
-        _isMoving = false;
-        Debug.Log("All targets reached");    
-    }
-
-
-    private void OnAllTargetsReached()
-    {
-        AllTargetsReached?.Invoke();
-    }
-
-    private int GetCharacterSpeed(GameObject character)
-    {
-        CharacterSpeed characterSpeedScript = character.GetComponent<CharacterSpeed>();
-
-        if (characterSpeedScript != null)
-        {
-            return characterSpeedScript.GetCharacterSpeed();
-        }
-        else
-        {
-            Debug.LogWarning("CharacterSpeed not on character: " + character.name);
-            return 0;
-        }
-    }
 
     public GameObject GetTargetForCharacter(GameObject character)
     {
@@ -149,21 +69,6 @@ public class PlayerTargetingSystem : MonoBehaviour
         {
             return _characterTargets[character];
         }
-        else
-        {
-            return null;
-        }
-    }
-
-    private class CharacterWithSpeed
-    {
-        public GameObject Character { get; private set; }
-        public int Speed { get; private set; }
-
-        public CharacterWithSpeed(GameObject character, int speed)
-        {
-            Character = character;
-            Speed = speed;
-        }
+        return null;
     }
 }

@@ -32,7 +32,7 @@ public class CharacterSelection : MonoBehaviour
     private void SelectCharacter()
     {
         GameObject character = SelectionCheck();
-        if (character != null && character.CompareTag("Character") && !selectedCharacters.Contains(character) && IsCharacterSelected())
+        if (character != null && IsCharacterSelected())
         {
             selectedCharacters.Add(character);
             UpdateCharacterSelectedStatus();
@@ -42,12 +42,13 @@ public class CharacterSelection : MonoBehaviour
     private void DeselectCharacter()
     {
         GameObject character = SelectionCheck();
-        if (character != null && character.CompareTag("Character") && selectedCharacters.Contains(character) && !IsCharacterSelected())
+        if (character != null && !IsCharacterSelected())
         {
             selectedCharacters.Remove(character);
             UpdateCharacterSelectedStatus();
         }
     }
+
 
     private bool IsCharacterSelected()
     {
@@ -74,11 +75,20 @@ public class CharacterSelection : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            return hit.collider.gameObject;
+            Transform objectHit = hit.transform;
+            while (objectHit != null)
+            {
+                if (objectHit.gameObject.CompareTag("Character") || objectHit.gameObject.CompareTag("Enemy"))
+                {
+                    return objectHit.gameObject;
+                }
+                objectHit = objectHit.parent;
+            }
         }
 
         return null;
     }
+
 
     public Vector3 GetSelectedCharacterPosition()
     {
