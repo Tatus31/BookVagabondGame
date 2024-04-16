@@ -49,7 +49,7 @@ public class EnemyTargetingSystem : MonoBehaviour
                     _enemyTargets.Add(enemy, targetCharacter);
                 }
 
-                Debug.Log($"Enemy {enemy} targets character {_enemyTargets[enemy]}");
+                //Debug.Log($"Enemy {enemy} targets character {_enemyTargets[enemy]}");
 
                 DrawOrUpdateLine(enemy, targetCharacter);
             }

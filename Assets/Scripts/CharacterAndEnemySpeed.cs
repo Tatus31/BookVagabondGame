@@ -23,7 +23,7 @@ public class CharacterAndEnemySpeed : MonoBehaviour
     public void SetEntitySpeed()
     {
         speed = UnityEngine.Random.Range(minSpeed, maxSpeed + 1);
-        Debug.Log($"Character Speed set to: {speed}");
+        //Debug.Log($"Character Speed set to: {speed}");
     }
 
     public static void UpdateSpeedsOnAllObjects()

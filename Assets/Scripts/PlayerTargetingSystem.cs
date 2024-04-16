@@ -34,15 +34,20 @@ public class PlayerTargetingSystem : MonoBehaviour
 
     private void SelectEnemy()
     {
+        if (CharacterSelection.Instance == null || CharacterSelection.Instance.CurrentCharacterSelected == null)
+        {
+            return; 
+        }
+
         GameObject enemy = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemy != null && enemy.CompareTag("Enemy"))
+        if (enemy != null && enemy.CompareTag("Enemy") && CharacterSelection.Instance.CurrentCharacterSelected.CompareTag("Character"))
         {
             GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
             if (selectedCharacter != null)
             {
                 _characterTargets[selectedCharacter] = enemy;
-                Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
+                //Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
             }
         }
     }
@@ -57,7 +62,7 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (selectedCharacter != null && _characterTargets.ContainsKey(selectedCharacter) && _characterTargets[selectedCharacter] == enemy)
             {
                 _characterTargets.Remove(selectedCharacter);
-                Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
+                //Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
             }
         }
     }

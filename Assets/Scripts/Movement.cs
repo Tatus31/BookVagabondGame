@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
     private bool _isMoving = false;
     public bool IsMoving { get { return _isMoving; } }
 
+    private Dictionary<GameObject, GameObject> clashingEntities = new Dictionary<GameObject, GameObject>();
+
     private PlayerTargetingSystem playerTargetingSystem;
     private EnemyTargetingSystem enemyTargetingSystem;
 
@@ -33,6 +35,7 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && playerTargetingSystem.CharacterTargets.Count > 0 && !_isMoving)
         {
+            CheckTargetingMatches();
             OnAllTargetsReached();
             StartCoroutine(MoveTowardsTargets());
         }
@@ -70,7 +73,7 @@ public class Movement : MonoBehaviour
             }
         }
 
-        entitiesWithSpeed.Sort((a, b) => a.Speed.CompareTo(b.Speed));
+        entitiesWithSpeed.Sort((a, b) => b.Speed.CompareTo(a.Speed));
 
         foreach (var entityWithSpeed in entitiesWithSpeed)
         {
@@ -82,7 +85,6 @@ public class Movement : MonoBehaviour
                 Transform entityTransform = currentEntity.transform;
                 Transform targetTransform = target.transform;
 
-                //Debug.Log($"starting position: {entityTransform.transform.position.x},{entityTransform.transform.position.y}, {entityTransform.transform.position.z}");
                 while (targetTransform != null)
                 {
                     float distanceToTarget = Vector3.Distance(entityTransform.position, targetTransform.position);
@@ -105,14 +107,30 @@ public class Movement : MonoBehaviour
                         entityTransform.position += direction * movementStep;
                     }
 
+                    if (clashingEntities.ContainsKey(currentEntity) && clashingEntities.ContainsValue(target) || clashingEntities.ContainsKey(target) && clashingEntities.ContainsValue(currentEntity))
+                    {
+                        Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
+
+                        Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
+
+                        float reverseMovementStep = moveSpeed * Time.deltaTime;
+
+                        if (reverseMovementStep > distanceToTarget)
+                        {
+                            targetTransform.position = entityTransform.position;
+                        }
+                        else
+                        {
+                            targetTransform.position += reverseDirection * reverseMovementStep;
+                        }
+                    }
+
                     yield return null;
-                    targetTransform = target.transform;
 
                     if (currentEntity != null && target != null)
                     {
                         entityTransform = currentEntity.transform;
                         targetTransform = target.transform;
-                        //Debug.Log($"current position: {entityTransform.transform.position.x},{entityTransform.transform.position.y}, {entityTransform.transform.position.z}");
                     }
                     else
                     {
@@ -127,6 +145,7 @@ public class Movement : MonoBehaviour
         _isMoving = false;
         Debug.Log("All targets reached");
     }
+
 
 
     private GameObject GetTargetForEntity(GameObject entity)
@@ -157,6 +176,42 @@ public class Movement : MonoBehaviour
             return 0;
         }
     }
+    private void CheckTargetingMatches()
+    {
+        foreach (var playerPair in playerTargetingSystem.CharacterTargets)
+        {
+            GameObject character = playerPair.Key;
+            GameObject enemy = playerPair.Value;
+
+            if (enemyTargetingSystem.EnemyTargets.ContainsKey(character) &&
+                enemyTargetingSystem.EnemyTargets[character] == enemy)
+            {
+                //Debug.Log($"{character.name}'s enemy in PlayerTargetingSystem matches their target in EnemyTargetingSystem.");
+
+                if (!clashingEntities.ContainsKey(character))
+                {
+                    clashingEntities.Add(character, enemy);
+                }
+            }
+        }
+
+        foreach (var enemyPair in enemyTargetingSystem.EnemyTargets)
+        {
+            GameObject enemy = enemyPair.Key;
+            GameObject character = enemyPair.Value;
+
+            if (playerTargetingSystem.CharacterTargets.ContainsKey(character) &&
+                playerTargetingSystem.CharacterTargets[character] == enemy)
+            {
+                //Debug.Log($"{enemy.name}'s target in EnemyTargetingSystem matches their character in PlayerTargetingSystem.");
+
+                if (!clashingEntities.ContainsKey(enemy))
+                {
+                    clashingEntities.Add(enemy, character);
+                }
+            }
+        }
+    }
 
     private void OnAllTargetsReached()
     {
@@ -174,5 +229,4 @@ public class Movement : MonoBehaviour
             Speed = speed;
         }
     }
-
 }
