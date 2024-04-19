@@ -312,7 +312,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 122.37259, y: 41.867813}
+  m_AnchoredPosition: {x: 122.37259, y: 41.867798}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &353509688
@@ -543,6 +543,7 @@ Transform:
   - {fileID: 875696627}
   - {fileID: 1591056012}
   - {fileID: 59998962}
+  - {fileID: 1194659162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &783025678
@@ -1271,6 +1272,50 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1706663331}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1194659161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1194659162}
+  - component: {fileID: 1194659163}
+  m_Layer: 0
+  m_Name: Clashing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1194659162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194659161}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 715850910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1194659163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194659161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4cdfe48f7249f4c977fd1e90f016fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1263287297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,6 +1650,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33885a2a246c7c04ea00ced2cbb3233f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.20246887
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.20246887
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  EnemyLineMaterial: {fileID: 2100000, guid: e4de6bbaa861ffc439836fac6c05d56f, type: 2}
   animationCurve:
     serializedVersion: 2
     m_Curve:
@@ -2002,31 +2072,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc1412ac9843e649b80f80c1ec459db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1.5364525
-      value: 0.20140138
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: -0.5364526
-      value: 0.20140138
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  lineMaterial: {fileID: 2100000, guid: e4de6bbaa861ffc439836fac6c05d56f, type: 2}
 --- !u!1 &1647650876
 GameObject:
   m_ObjectHideFlags: 0

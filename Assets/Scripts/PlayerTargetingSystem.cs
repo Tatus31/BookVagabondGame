@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerTargetingSystem : MonoBehaviour
@@ -31,12 +32,11 @@ public class PlayerTargetingSystem : MonoBehaviour
         }
     }
 
-
     private void SelectEnemy()
     {
         if (CharacterSelection.Instance == null || CharacterSelection.Instance.CurrentCharacterSelected == null)
         {
-            return; 
+            return;
         }
 
         GameObject enemy = CharacterSelection.Instance.SelectionCheck();
@@ -47,6 +47,7 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (selectedCharacter != null)
             {
                 _characterTargets[selectedCharacter] = enemy;
+                Clashing.Instance.ForceClashingTarget();
                 //Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
             }
         }
@@ -62,11 +63,11 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (selectedCharacter != null && _characterTargets.ContainsKey(selectedCharacter) && _characterTargets[selectedCharacter] == enemy)
             {
                 _characterTargets.Remove(selectedCharacter);
+                Clashing.Instance.DeselectEnemy(enemy);
                 //Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
             }
         }
     }
-
 
     public GameObject GetTargetForCharacter(GameObject character)
     {

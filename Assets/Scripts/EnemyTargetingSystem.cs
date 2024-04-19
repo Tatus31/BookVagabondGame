@@ -7,16 +7,20 @@ public class EnemyTargetingSystem : MonoBehaviour
     public static EnemyTargetingSystem Instance;
 
     private Dictionary<GameObject, GameObject> _enemyTargets = new Dictionary<GameObject, GameObject>();
-    private Dictionary<GameObject, LineRenderer> _enemyLines = new Dictionary<GameObject, LineRenderer>();
+    private Dictionary<GameObject, GameObject> _originalEnemyTargets = new Dictionary<GameObject, GameObject>();
 
     public Dictionary<GameObject, GameObject> EnemyTargets { get { return _enemyTargets; } }
 
-    [SerializeField] AnimationCurve animationCurve;
-    [SerializeField] Material lineMaterial;
+    private ArrowDragIndicator arrowDragIndicator;
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        arrowDragIndicator = ArrowDragIndicator.Instance;
     }
 
     public void AssignTargetsToEnemies()
@@ -24,12 +28,12 @@ public class EnemyTargetingSystem : MonoBehaviour
         List<GameObject> characters = CharactersAndEnemiesList.Instance.characters;
         List<GameObject> enemies = CharactersAndEnemiesList.Instance.enemies;
 
-        foreach (GameObject enemy in _enemyLines.Keys)
+        foreach (GameObject enemy in arrowDragIndicator.EnemyLines.Keys)
         {
             if (!enemies.Contains(enemy))
             {
-                Destroy(_enemyLines[enemy].gameObject);
-                _enemyLines.Remove(enemy);
+                Destroy(arrowDragIndicator.EnemyLines[enemy].gameObject);
+                arrowDragIndicator.EnemyLines.Remove(enemy);
             }
         }
 
@@ -47,38 +51,44 @@ public class EnemyTargetingSystem : MonoBehaviour
                 else
                 {
                     _enemyTargets.Add(enemy, targetCharacter);
+                    _originalEnemyTargets.Add(enemy, targetCharacter);
                 }
 
-                //Debug.Log($"Enemy {enemy} targets character {_enemyTargets[enemy]}");
-
-                DrawOrUpdateLine(enemy, targetCharacter);
+                arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(enemy, targetCharacter);
             }
         }
     }
 
-    private void DrawOrUpdateLine(GameObject enemy, GameObject target)
+    public void SetTarget(GameObject enemy, GameObject newTarget)
     {
-        LineRenderer lineRenderer;
-
-        if (_enemyLines.ContainsKey(enemy))
+        if (_enemyTargets.ContainsKey(enemy))
         {
-            lineRenderer = _enemyLines[enemy];
+            _enemyTargets[enemy] = newTarget;
+            arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(enemy, newTarget);
         }
-        else
+    }
+
+    public GameObject GetTarget(GameObject enemy)
+    {
+        GameObject target = null;
+
+        if (_enemyTargets.ContainsKey(enemy))
         {
-            GameObject lineObject = new GameObject("LineRenderer");
-            lineRenderer = lineObject.AddComponent<LineRenderer>();
-            lineRenderer.useWorldSpace = true;
-            lineRenderer.widthCurve = animationCurve;
-            lineRenderer.numCapVertices = 10;
-
-            lineRenderer.material = lineMaterial;
-
-            _enemyLines.Add(enemy, lineRenderer);
+            target = _enemyTargets[enemy];
         }
 
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, enemy.transform.position);
-        lineRenderer.SetPosition(1, target.transform.position);
+        return target;
+    }
+
+    public GameObject GetOriginalTarget(GameObject enemy)
+    {
+        GameObject originalTarget = null;
+
+        if (_originalEnemyTargets.ContainsKey(enemy))
+        {
+            originalTarget = _originalEnemyTargets[enemy];
+        }
+
+        return originalTarget;
     }
 }

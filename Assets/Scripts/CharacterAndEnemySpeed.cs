@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -41,8 +42,16 @@ public class CharacterAndEnemySpeed : MonoBehaviour
         UpdateSpeedsOnAllObjects();
     }
 
-    public int GetEntitySpeed()
+    public int GetEntitySpeed(GameObject entity)
     {
-        return speed;
+        if (entity.GetComponent<CharacterAndEnemySpeed>() == null)
+        {
+            Debug.LogWarning("No Entity Speed component on object!");
+            return 0;
+        }
+        else
+        {
+            return entity.GetComponent<CharacterAndEnemySpeed>().speed;
+        }          
     }
 }

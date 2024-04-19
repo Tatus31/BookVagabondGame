@@ -12,10 +12,9 @@ public class Movement : MonoBehaviour
     private bool _isMoving = false;
     public bool IsMoving { get { return _isMoving; } }
 
-    private Dictionary<GameObject, GameObject> clashingEntities = new Dictionary<GameObject, GameObject>();
-
     private PlayerTargetingSystem playerTargetingSystem;
     private EnemyTargetingSystem enemyTargetingSystem;
+    private Clashing clashing;
 
     [SerializeField] private float nextCharacterMove;
     [SerializeField] private float moveSpeed;
@@ -29,13 +28,14 @@ public class Movement : MonoBehaviour
     {
         playerTargetingSystem = PlayerTargetingSystem.Instance;
         enemyTargetingSystem = EnemyTargetingSystem.Instance;
+        clashing = Clashing.Instance;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && playerTargetingSystem.CharacterTargets.Count > 0 && !_isMoving)
         {
-            CheckTargetingMatches();
+            clashing.CheckTargetingClashes();
             OnAllTargetsReached();
             StartCoroutine(MoveTowardsTargets());
         }
@@ -107,7 +107,8 @@ public class Movement : MonoBehaviour
                         entityTransform.position += direction * movementStep;
                     }
 
-                    if (clashingEntities.ContainsKey(currentEntity) && clashingEntities.ContainsValue(target) || clashingEntities.ContainsKey(target) && clashingEntities.ContainsValue(currentEntity))
+                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target) 
+                       || clashing.ClashingEntities.ContainsKey(target) && clashing.ClashingEntities.ContainsValue(currentEntity))
                     {
                         Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
 
@@ -168,48 +169,12 @@ public class Movement : MonoBehaviour
 
         if (characterSpeedScript != null)
         {
-            return characterSpeedScript.GetEntitySpeed();
+            return characterSpeedScript.GetEntitySpeed(obj);
         }
         else
         {
             Debug.LogWarning("CharacterSpeed not found on object: " + obj.name);
             return 0;
-        }
-    }
-    private void CheckTargetingMatches()
-    {
-        foreach (var playerPair in playerTargetingSystem.CharacterTargets)
-        {
-            GameObject character = playerPair.Key;
-            GameObject enemy = playerPair.Value;
-
-            if (enemyTargetingSystem.EnemyTargets.ContainsKey(character) &&
-                enemyTargetingSystem.EnemyTargets[character] == enemy)
-            {
-                //Debug.Log($"{character.name}'s enemy in PlayerTargetingSystem matches their target in EnemyTargetingSystem.");
-
-                if (!clashingEntities.ContainsKey(character))
-                {
-                    clashingEntities.Add(character, enemy);
-                }
-            }
-        }
-
-        foreach (var enemyPair in enemyTargetingSystem.EnemyTargets)
-        {
-            GameObject enemy = enemyPair.Key;
-            GameObject character = enemyPair.Value;
-
-            if (playerTargetingSystem.CharacterTargets.ContainsKey(character) &&
-                playerTargetingSystem.CharacterTargets[character] == enemy)
-            {
-                //Debug.Log($"{enemy.name}'s target in EnemyTargetingSystem matches their character in PlayerTargetingSystem.");
-
-                if (!clashingEntities.ContainsKey(enemy))
-                {
-                    clashingEntities.Add(enemy, character);
-                }
-            }
         }
     }
 
