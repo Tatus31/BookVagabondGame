@@ -10,6 +10,7 @@ public class EnemyTargetingSystem : MonoBehaviour
     private Dictionary<GameObject, GameObject> _originalEnemyTargets = new Dictionary<GameObject, GameObject>();
 
     public Dictionary<GameObject, GameObject> EnemyTargets { get { return _enemyTargets; } }
+    public Dictionary<GameObject,GameObject> OriginalEnemyTargets {  get { return _originalEnemyTargets; } }
 
     private ArrowDragIndicator arrowDragIndicator;
 
@@ -47,6 +48,7 @@ public class EnemyTargetingSystem : MonoBehaviour
                 if (_enemyTargets.ContainsKey(enemy))
                 {
                     _enemyTargets[enemy] = targetCharacter;
+                    _originalEnemyTargets[enemy] = targetCharacter;
                 }
                 else
                 {

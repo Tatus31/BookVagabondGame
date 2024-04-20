@@ -13,10 +13,11 @@ public class Clashing : MonoBehaviour
     private CharacterAndEnemySpeed characterAndEnemySpeed;
     private ArrowDragIndicator arrowDragIndicator;
 
+    private List<GameObject> enemiesAfterTargetChange = new List<GameObject>();
+
     private Dictionary<GameObject, GameObject> _clashingEntities = new Dictionary<GameObject, GameObject>();
     public Dictionary<GameObject, GameObject> ClashingEntities { get { return _clashingEntities; } }
 
-    private Dictionary<GameObject, GameObject> originalEnemyTargets = new Dictionary<GameObject, GameObject>();
     private void Awake()
     {
         Instance = this;
@@ -74,47 +75,53 @@ public class Clashing : MonoBehaviour
             GameObject entity = PlayerPair.Key;
             GameObject target = PlayerPair.Value;
 
-            GameObject originalEnemyTargetEntity = enemyTargetingSystem.EnemyTargets[target];
-            Debug.Log(originalEnemyTargetEntity.name);
-
             if (characterAndEnemySpeed.GetEntitySpeed(entity) > characterAndEnemySpeed.GetEntitySpeed(target))
             {
-                Debug.Log($"{entity.name} is changing clash target for {target.name}");
+                //Debug.Log($"{entity.name} is changing clash target for {target.name}");
 
-                enemyTargetingSystem.SetTarget(target, entity);
+                if (!playerTargetingSystem.IsTargetLocked(target) || playerTargetingSystem.IsTargetLocked(target) && playerTargetingSystem.IsTargetLocked(entity))
+                {
+                    enemyTargetingSystem.SetTarget(target, entity);
+                    enemiesAfterTargetChange.Add(target);
+                    playerTargetingSystem.LockTarget(target, entity);
 
-                arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(target, entity);
+                    arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(target, entity);
+                }
             }          
         }
     }
 
-    public void SetOriginalTarget(GameObject enemy, GameObject originalTarget)
-    {
-        if (!originalEnemyTargets.ContainsKey(enemy))
-        {
-            originalEnemyTargets.Add(enemy, originalTarget);
-        }
-        else
-        {
-            originalEnemyTargets[enemy] = originalTarget;
-        }
-    }
-
-    public GameObject GetOriginalTarget(GameObject enemy)
-    {
-        if (originalEnemyTargets.ContainsKey(enemy))
-        {
-            return originalEnemyTargets[enemy];
-        }
-        return null;
-    }
-
     public void DeselectEnemy(GameObject enemy)
     {
-        GameObject originalTarget = enemyTargetingSystem.GetOriginalTarget(enemy);
-        if (originalTarget != null)
+        if (enemiesAfterTargetChange.Contains(enemy))
         {
-            enemyTargetingSystem.SetTarget(enemy, originalTarget);
+            GameObject originalTarget = enemyTargetingSystem.GetOriginalTarget(enemy);
+
+            if (originalTarget != null)
+            {
+                bool isOtherCharacterTargeting = IsOtherCharacterTargeting(enemy);
+
+                if (!isOtherCharacterTargeting)
+                {
+                    enemiesAfterTargetChange.Remove(enemy);
+                    playerTargetingSystem.UnlockTarget(enemy);
+                    enemyTargetingSystem.SetTarget(enemy, originalTarget);
+                }
+            }
         }
     }
+
+    private bool IsOtherCharacterTargeting(GameObject enemy)
+    {
+        foreach (var pair in playerTargetingSystem.CharacterTargets)
+        {
+            if (pair.Key != enemy && pair.Value == enemy)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -6,6 +6,8 @@ public class PlayerTargetingSystem : MonoBehaviour
 {
     public static PlayerTargetingSystem Instance;
 
+    private Dictionary<GameObject, GameObject> _lockedEnemies = new Dictionary<GameObject, GameObject>();
+
     private Dictionary<GameObject, GameObject> _characterTargets = new Dictionary<GameObject, GameObject>();
     public Dictionary<GameObject, GameObject> CharacterTargets { get { return _characterTargets; } }
 
@@ -41,17 +43,22 @@ public class PlayerTargetingSystem : MonoBehaviour
 
         GameObject enemy = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemy != null && enemy.CompareTag("Enemy") && CharacterSelection.Instance.CurrentCharacterSelected.CompareTag("Character"))
+        GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
+
+        if (_characterTargets.ContainsKey(selectedCharacter))
         {
-            GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
-            if (selectedCharacter != null)
-            {
-                _characterTargets[selectedCharacter] = enemy;
-                Clashing.Instance.ForceClashingTarget();
-                //Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
-            }
+            Debug.Log($"{selectedCharacter.name} is already targeting an enemy.");
+            return;
+        }
+
+        if (enemy != null && enemy.CompareTag("Enemy") && selectedCharacter.CompareTag("Character"))
+        {
+            _characterTargets[selectedCharacter] = enemy;
+            Clashing.Instance.ForceClashingTarget();
+            //Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
         }
     }
+
 
     private void DeselectEnemy()
     {
@@ -76,5 +83,25 @@ public class PlayerTargetingSystem : MonoBehaviour
             return _characterTargets[character];
         }
         return null;
+    }
+    public bool IsTargetLocked(GameObject enemy)
+    {
+        return _lockedEnemies.ContainsKey(enemy);
+    }
+
+    public void LockTarget(GameObject enemy, GameObject character)
+    {
+        if (!_lockedEnemies.ContainsKey(enemy))
+        {
+            _lockedEnemies.Add(enemy, character);
+        }
+    }
+
+    public void UnlockTarget(GameObject enemy)
+    {
+        if (_lockedEnemies.ContainsKey(enemy))
+        {
+            _lockedEnemies.Remove(enemy);
+        }
     }
 }
