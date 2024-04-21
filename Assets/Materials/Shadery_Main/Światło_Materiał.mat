@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Lighting_Shader
-  m_Shader: {fileID: -6465566751694194690, guid: af8c06bd18dade14fb8d7e2f3efed6ee,
+  m_Name: "\u015Awiat\u0142o_Materia\u0142"
+  m_Shader: {fileID: -6465566751694194690, guid: 6368b139fc3c9fb479fd348c57e6a861,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,26 +24,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Ambient:
-        m_Texture: {fileID: 2800000, guid: 3fd0e4a9c455d0648bd27b5e38b5e591, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Displacement:
-        m_Texture: {fileID: 2800000, guid: ec6a3aac4957069438c465b7a67aad32, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Normal:
-        m_Texture: {fileID: 2800000, guid: d61f7f4934f659644ba37be674289fad, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Textura:
-        m_Texture: {fileID: 2800000, guid: ed74d1244c0efda49a00245451e56a05, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _roughnes:
-        m_Texture: {fileID: 2800000, guid: 34101bacc3096b14381825194e1f58af, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -58,13 +38,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 0.374
+    - _Float: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _metalic: 0
     m_Colors:
-    - _emisive_color: {r: 638.138, g: 0, b: 766.9961, a: 0}
+    - _Color_Base: {r: 0.74901944, g: 0.3146267, b: 0.13072504, a: 0.15686275}
+    - _Emission_Color_Base: {r: 222.86095, g: 30.4857, b: 30.4857, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &5985508472833360262
+--- !u!114 &6324842609845119552
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
