@@ -15,6 +15,9 @@ public class DMG_Kalk : MonoBehaviour
     [SerializeField]
     GameObject sfera;
 
+    [SerializeField]
+    HealthManager healthManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,12 +31,15 @@ public class DMG_Kalk : MonoBehaviour
         {
             //Hp_Wrog = Hp_Wrog - DMG_Gracz;
             transform.position = new Vector3(11, 3, 5);
+            
 
         }
         else if (hp_Gracz > 0 && hp_Wrog > 0 & dmg_Wrog > dmg_Gracz)
         {
             //Hp_Gracz = Hp_Gracz - DMG_Wrog;
             transform.position = new Vector3(11, 3, 12);
+            //healthManager.TakeDamage();
+
         }
 
     }
