@@ -6,10 +6,8 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour
 {
     [SerializeField] private Slider slider;
-
     
-
-
+    
     public HealthManager(Slider slider, int health)
     {
         this.slider = slider;
@@ -19,6 +17,8 @@ public class HealthManager : MonoBehaviour
 
     private void Start()
     {
+       
+
         Debug.Log("Health" + " " + GetCurrentHealth());
         slider.value = 100;
     }
@@ -60,11 +60,11 @@ public class HealthManager : MonoBehaviour
     public void Heal(int helathamount)
     {
 
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            slider.value += helathamount;
-        }
-        
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                slider.value += helathamount;
+            }
+            
     }
 
 }
