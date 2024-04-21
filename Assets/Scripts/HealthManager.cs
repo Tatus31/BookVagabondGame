@@ -7,25 +7,64 @@ public class HealthManager : MonoBehaviour
 {
     [SerializeField] private Slider slider;
 
+    
+
+
+    public HealthManager(Slider slider, int health)
+    {
+        this.slider = slider;
+       
+    }
+
+
+    private void Start()
+    {
+        Debug.Log("Health" + " " + GetCurrentHealth());
+        slider.value = 100;
+    }
+
     void Update()
     {
-        // Check for key press in the Update method
+        
         if (Input.GetKeyDown(KeyCode.W))
         {
-            TakeDamage(10);  // Pass the damage value as a parameter
+           TakeDamage(10);  
         }
+        Heal(10);
     }
 
     public void TakeDamage(int damage)
     {
-        // Check if slider is assigned to avoid null reference exception
-        if (slider != null)
+
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            slider.value -= damage;  // Subtract damage from slider value
+            if (slider != null)
+            {
+                slider.value -= damage;
+                Debug.Log("Health" + " " + GetCurrentHealth());
+            }
+            else
+            {
+                Debug.LogError("Slider not assigned in the Inspector");
+            }
         }
-        else
-        {
-            Debug.LogError("Slider not assigned in the Inspector");
-        }
+        
     }
+
+    public int GetCurrentHealth()
+    {
+        return (int)(slider.value);
+    }
+
+
+    public void Heal(int helathamount)
+    {
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            slider.value += helathamount;
+        }
+        
+    }
+
 }
