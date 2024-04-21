@@ -94,20 +94,24 @@ public class Movement : MonoBehaviour
                         break;
                     }
 
-                    Vector3 direction = (targetTransform.position - entityTransform.position).normalized;
+                    Vector3 targetPosition = targetTransform.position;
+                    targetPosition.y = entityTransform.position.y;
+                    Vector3 direction = (targetPosition - entityTransform.position).normalized;
 
                     float movementStep = moveSpeed * Time.deltaTime;
 
                     if (movementStep > distanceToTarget)
                     {
-                        entityTransform.position = targetTransform.position;
+                        entityTransform.position = targetPosition;
                     }
                     else
                     {
-                        entityTransform.position += direction * movementStep;
+                        Vector3 newPosition = entityTransform.position + direction * movementStep;
+                        newPosition.y = entityTransform.position.y;
+                        entityTransform.position = newPosition;
                     }
 
-                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target) 
+                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target)
                        || clashing.ClashingEntities.ContainsKey(target) && clashing.ClashingEntities.ContainsValue(currentEntity))
                     {
                         Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
@@ -122,7 +126,9 @@ public class Movement : MonoBehaviour
                         }
                         else
                         {
-                            targetTransform.position += reverseDirection * reverseMovementStep;
+                            Vector3 newTargetPosition = targetTransform.position + reverseDirection * reverseMovementStep;
+                            newTargetPosition.y = targetTransform.position.y;
+                            targetTransform.position = newTargetPosition;
                         }
                     }
 
@@ -146,6 +152,7 @@ public class Movement : MonoBehaviour
         _isMoving = false;
         Debug.Log("All targets reached");
     }
+
 
 
 
