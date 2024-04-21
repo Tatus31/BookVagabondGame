@@ -60,7 +60,7 @@ public class CharacterSelection : MonoBehaviour
         if (selectedCharacters.Count > 0)
         {
             _currentCharacterSelected = selectedCharacters[0];
-            Debug.Log(_currentCharacterSelected.name);
+            //Debug.Log(_currentCharacterSelected.name);
         }
         else
         {

@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
 
     private PlayerTargetingSystem playerTargetingSystem;
     private EnemyTargetingSystem enemyTargetingSystem;
+    private Clashing clashing;
 
     [SerializeField] private float nextCharacterMove;
     [SerializeField] private float moveSpeed;
@@ -27,12 +28,14 @@ public class Movement : MonoBehaviour
     {
         playerTargetingSystem = PlayerTargetingSystem.Instance;
         enemyTargetingSystem = EnemyTargetingSystem.Instance;
+        clashing = Clashing.Instance;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && playerTargetingSystem.CharacterTargets.Count > 0 && !_isMoving)
         {
+            clashing.CheckTargetingClashes();
             OnAllTargetsReached();
             StartCoroutine(MoveTowardsTargets());
         }
@@ -70,7 +73,7 @@ public class Movement : MonoBehaviour
             }
         }
 
-        entitiesWithSpeed.Sort((a, b) => a.Speed.CompareTo(b.Speed));
+        entitiesWithSpeed.Sort((a, b) => b.Speed.CompareTo(a.Speed));
 
         foreach (var entityWithSpeed in entitiesWithSpeed)
         {
@@ -82,7 +85,6 @@ public class Movement : MonoBehaviour
                 Transform entityTransform = currentEntity.transform;
                 Transform targetTransform = target.transform;
 
-                //Debug.Log($"starting position: {entityTransform.transform.position.x},{entityTransform.transform.position.y}, {entityTransform.transform.position.z}");
                 while (targetTransform != null)
                 {
                     float distanceToTarget = Vector3.Distance(entityTransform.position, targetTransform.position);
@@ -105,14 +107,31 @@ public class Movement : MonoBehaviour
                         entityTransform.position += direction * movementStep;
                     }
 
+                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target) 
+                       || clashing.ClashingEntities.ContainsKey(target) && clashing.ClashingEntities.ContainsValue(currentEntity))
+                    {
+                        Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
+
+                        Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
+
+                        float reverseMovementStep = moveSpeed * Time.deltaTime;
+
+                        if (reverseMovementStep > distanceToTarget)
+                        {
+                            targetTransform.position = entityTransform.position;
+                        }
+                        else
+                        {
+                            targetTransform.position += reverseDirection * reverseMovementStep;
+                        }
+                    }
+
                     yield return null;
-                    targetTransform = target.transform;
 
                     if (currentEntity != null && target != null)
                     {
                         entityTransform = currentEntity.transform;
                         targetTransform = target.transform;
-                        //Debug.Log($"current position: {entityTransform.transform.position.x},{entityTransform.transform.position.y}, {entityTransform.transform.position.z}");
                     }
                     else
                     {
@@ -127,6 +146,7 @@ public class Movement : MonoBehaviour
         _isMoving = false;
         Debug.Log("All targets reached");
     }
+
 
 
     private GameObject GetTargetForEntity(GameObject entity)
@@ -149,7 +169,7 @@ public class Movement : MonoBehaviour
 
         if (characterSpeedScript != null)
         {
-            return characterSpeedScript.GetEntitySpeed();
+            return characterSpeedScript.GetEntitySpeed(obj);
         }
         else
         {
@@ -174,5 +194,4 @@ public class Movement : MonoBehaviour
             Speed = speed;
         }
     }
-
 }
