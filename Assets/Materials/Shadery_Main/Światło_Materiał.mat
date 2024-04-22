@@ -40,6 +40,7 @@ Material:
     m_Floats:
     - _Alpha: 0.374
     - _Float: 0
+    - _Note_W_cz_Post_Procesing_w_kamerze_by_dzia_a_o: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:

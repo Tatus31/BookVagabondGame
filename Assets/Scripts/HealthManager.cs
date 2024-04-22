@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour
 {
     [SerializeField] private Slider slider;
-    
+    HealthManager healthManager;
     
     public HealthManager(Slider slider, int health)
     {
@@ -17,7 +17,7 @@ public class HealthManager : MonoBehaviour
 
     private void Start()
     {
-       
+       healthManager = GetComponent<HealthManager>();
 
         Debug.Log("Health" + " " + GetCurrentHealth());
         slider.value = 100;
@@ -53,6 +53,11 @@ public class HealthManager : MonoBehaviour
 
     public int GetCurrentHealth()
     {
+        if (healthManager is null)
+        {
+            return 0;
+        }
+
         return (int)(slider.value);
     }
 
