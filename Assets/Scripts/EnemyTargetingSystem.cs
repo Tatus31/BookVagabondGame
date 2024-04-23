@@ -56,7 +56,7 @@ public class EnemyTargetingSystem : MonoBehaviour
                     _originalEnemyTargets.Add(enemy, targetCharacter);
                 }
 
-                arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(enemy, targetCharacter);
+                arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, targetCharacter);
             }
         }
     }
@@ -66,7 +66,7 @@ public class EnemyTargetingSystem : MonoBehaviour
         if (_enemyTargets.ContainsKey(enemy))
         {
             _enemyTargets[enemy] = newTarget;
-            arrowDragIndicator.DrawOrUpdateEnemyTargetingLineRenderer(enemy, newTarget);
+            arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, newTarget);
         }
     }
 

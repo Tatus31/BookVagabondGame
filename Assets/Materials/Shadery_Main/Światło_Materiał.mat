@@ -45,7 +45,7 @@ Material:
     - _QueueOffset: 0
     m_Colors:
     - _Color_Base: {r: 0.74901944, g: 0.3146267, b: 0.13072504, a: 0.15686275}
-    - _Emission_Color_Base: {r: 222.86095, g: 30.4857, b: 30.4857, a: 0}
+    - _Emission_Color_Base: {r: 297.53687, g: 3.9297168, b: 3.9297168, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &6324842609845119552
 MonoBehaviour:

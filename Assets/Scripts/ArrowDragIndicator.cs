@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class ArrowDragIndicator : MonoBehaviour
 {
@@ -7,11 +8,11 @@ public class ArrowDragIndicator : MonoBehaviour
 
     [Header("Enemy Line")]
     [SerializeField] AnimationCurve enemyAnimationCurve;
-    [SerializeField] Material EnemyLineMaterial;
+    [SerializeField] Material enemyLineMaterial;
     [Space(20)]
     [Header("Player Line")]
-    [SerializeField] AnimationCurve animationCurve;
-    [SerializeField] Material lineMaterial;
+    [SerializeField] AnimationCurve characterAnimationCurve;
+    [SerializeField] Material characterLineMaterial;
 
     private GameObject lineObject;
     private LineRenderer lineRenderer;
@@ -19,7 +20,7 @@ public class ArrowDragIndicator : MonoBehaviour
     private GameObject currentEnemy;
 
     private Dictionary<GameObject, LineRenderer> _enemyLines = new Dictionary<GameObject, LineRenderer>();
-    public Dictionary<GameObject, LineRenderer> EnemyLines {  get { return _enemyLines; } }
+    public Dictionary<GameObject, LineRenderer> EnemyLines { get { return _enemyLines; } }
 
     private void Awake()
     {
@@ -51,7 +52,7 @@ public class ArrowDragIndicator : MonoBehaviour
                     currentCharacter = selectedCharacter;
                     currentEnemy = selectedEnemy;
 
-                    CreateOrUpdateLineRenderer(selectedCharacter.transform.position, selectedEnemy.transform.position);
+                    CreateOrUpdateLineRenderer(selectedCharacter, selectedEnemy);
                 }
             }
             else
@@ -63,49 +64,69 @@ public class ArrowDragIndicator : MonoBehaviour
         }
     }
 
-    private void CreateOrUpdateLineRenderer(Vector3 characterPosition, Vector3 enemyPosition)
+    private void CreateOrUpdateLineRenderer(GameObject characterPosition, GameObject enemyPosition)
     {
-        if (lineObject == null)
+        if (this.lineRenderer == null)
         {
             lineObject = new GameObject("LineRenderer");
-            lineRenderer = lineObject.AddComponent<LineRenderer>();
-            lineRenderer.useWorldSpace = true;
-            lineRenderer.widthCurve = animationCurve;
-            lineRenderer.numCapVertices = 10;
+            lineObject.transform.SetParent(transform);
+            this.lineRenderer = lineObject.AddComponent<LineRenderer>();
+            this.lineRenderer.useWorldSpace = true;
+            this.lineRenderer.widthCurve = characterAnimationCurve;
+            this.lineRenderer.numCapVertices = 10;
 
-            lineRenderer.material = lineRenderer.material;
+            if (enemyLineMaterial != null)
+            {
+                this.lineRenderer.material = characterLineMaterial;
+            }
+            else
+            {
+                Debug.LogError("Enemy Line Material is not assigned.");
+            }
         }
 
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, characterPosition);
-        lineRenderer.SetPosition(1, enemyPosition);
+        CurvePointCalculator(characterPosition, enemyPosition, this.lineRenderer);
+
+        currentCharacter = characterPosition;
+        currentEnemy = enemyPosition;
     }
 
-    public void DrawOrUpdateEnemyTargetingLineRenderer(GameObject enemy, GameObject target)
+
+
+
+    public void CreateOrUpdateEnemyLineRenderer(GameObject enemyPosition, GameObject characterPosition)
     {
         LineRenderer lineRenderer;
 
-        if (_enemyLines.ContainsKey(enemy))
+        if (_enemyLines.ContainsKey(enemyPosition))
         {
-            lineRenderer = _enemyLines[enemy];
+            lineRenderer = _enemyLines[enemyPosition];
         }
         else
         {
             GameObject lineObject = new GameObject("LineRenderer");
             lineRenderer = lineObject.AddComponent<LineRenderer>();
+            lineObject.transform.SetParent(transform);
             lineRenderer.useWorldSpace = true;
             lineRenderer.widthCurve = enemyAnimationCurve;
             lineRenderer.numCapVertices = 10;
 
-            lineRenderer.material = EnemyLineMaterial;
+            if (enemyLineMaterial != null)
+            {
+                lineRenderer.material = enemyLineMaterial;
+            }
+            else
+            {
+                Debug.LogError("Enemy Line Material is not assigned.");
+            }
 
-            _enemyLines.Add(enemy, lineRenderer);
+            _enemyLines.Add(enemyPosition, lineRenderer);
         }
 
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, enemy.transform.position);
-        lineRenderer.SetPosition(1, target.transform.position);
+        CurvePointCalculator(enemyPosition, characterPosition, lineRenderer);
     }
+
+
 
     private void RemoveLineRenderer()
     {
@@ -129,5 +150,33 @@ public class ArrowDragIndicator : MonoBehaviour
         {
             Destroy(renderer.gameObject);
         }
+    }
+
+    private void CurvePointCalculator(GameObject startPosition, GameObject endPosition, LineRenderer lineRenderer)
+    {
+        Vector3 start = startPosition.transform.position;
+        Vector3 end = endPosition.transform.position;
+        Vector3 midPoint = (start + end) / 2f;
+        float yOffset = 2f;
+
+        Vector3 controlPoint1 = start + Vector3.up * yOffset;
+        Vector3 controlPoint2 = end + Vector3.up * yOffset;
+
+        List<Vector3> curvePoints = new List<Vector3>();
+
+        int numSegments = 20;
+
+        for (int i = 0; i <= numSegments; i++)
+        {
+            float t = i / (float)numSegments;
+            Vector3 point = Mathf.Pow(1 - t, 3) * start +
+                            3 * Mathf.Pow(1 - t, 2) * t * controlPoint1 +
+                            3 * (1 - t) * Mathf.Pow(t, 2) * controlPoint2 +
+                            Mathf.Pow(t, 3) * end;
+            curvePoints.Add(point);
+        }
+
+        lineRenderer.positionCount = curvePoints.Count;
+        lineRenderer.SetPositions(curvePoints.ToArray());
     }
 }
