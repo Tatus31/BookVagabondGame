@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,6 +9,8 @@ public class CharacterAndEnemySpeed : MonoBehaviour
 {
     public static CharacterAndEnemySpeed Instance;
 
+    [SerializeField] public TextMeshProUGUI text;
+
     [SerializeField] private int speed;
 
     private int minSpeed = 1;
@@ -15,10 +18,13 @@ public class CharacterAndEnemySpeed : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        
+        
     }
     void Start()
     {
         SetEntitySpeed();
+        ShowSpeedonCanvas();
     }
 
     public void SetEntitySpeed()
@@ -53,5 +59,11 @@ public class CharacterAndEnemySpeed : MonoBehaviour
         {
             return entity.GetComponent<CharacterAndEnemySpeed>().speed;
         }          
+    }
+
+
+    public void ShowSpeedonCanvas()
+    {
+        text.text = speed.ToString();
     }
 }
