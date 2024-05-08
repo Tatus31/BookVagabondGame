@@ -91,27 +91,6 @@ public class Movement : MonoBehaviour
 
                     if (distanceToTarget <= stoppingDistance)
                     {
-                        if (PlayerInput.Instance.LeftClickClicked && !AttackDistanceCheck.instance.HasEntityAttacked(currentEntity, target) && !clashing.AreEntitiesClashing(currentEntity, target))
-                        {
-                            Debug.Log($"{currentEntity} Attacked!");
-                            AttackDistanceCheck.instance.EntityAttack(currentEntity, target);
-
-                            PlayerInput.Instance.LeftClickClicked = false;
-                        }
-                        else if (PlayerInput.Instance.LeftClickClicked && clashing.AreEntitiesClashing(currentEntity, target))
-                        {
-                            Debug.Log($"{currentEntity} and {target} are attacking eachother!");
-                            AttackDistanceCheck.instance.EntityAttack(currentEntity, target);
-                            AttackDistanceCheck.instance.EntityAttack(target, currentEntity);
-                        }
-
-
-                        if (!AttackDistanceCheck.instance.HasEntityAttacked(currentEntity, target) && !AttackDistanceCheck.instance.HasEntityAttacked(target, currentEntity))
-                        {
-                            yield return null;
-                            continue; 
-                        }
-
                         break;
                     }
 
@@ -132,17 +111,18 @@ public class Movement : MonoBehaviour
                         entityTransform.position = newPosition;
                     }
 
-                    if (clashing.AreEntitiesClashing(currentEntity, target))
+                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target)
+                       || clashing.ClashingEntities.ContainsKey(target) && clashing.ClashingEntities.ContainsValue(currentEntity))
                     {
-                        //Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
+                        Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
 
                         Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
 
                         float reverseMovementStep = moveSpeed * Time.deltaTime;
 
-                        if (reverseMovementStep >= distanceToTarget)
+                        if (reverseMovementStep > distanceToTarget)
                         {
-                            targetTransform.position = entityTransform.position;                           
+                            targetTransform.position = entityTransform.position;
                         }
                         else
                         {
@@ -171,7 +151,6 @@ public class Movement : MonoBehaviour
 
         _isMoving = false;
         Debug.Log("All targets reached");
-        AttackDistanceCheck.instance.ResetAllEntityAttackCooldown();
     }
 
 

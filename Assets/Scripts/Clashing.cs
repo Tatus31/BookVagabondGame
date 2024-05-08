@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -42,7 +41,7 @@ public class Clashing : MonoBehaviour
             if (enemyTargetingSystem.EnemyTargets.ContainsKey(character) &&
                 enemyTargetingSystem.EnemyTargets[character] == enemy)
             {
-                //Debug.Log($"{character.name} enemy in PlayerTargetingSystem matches their target");
+                //Debug.Log($"{character.name}'s enemy in PlayerTargetingSystem matches their target in EnemyTargetingSystem.");
 
                 if (!_clashingEntities.ContainsKey(character))
                 {
@@ -59,7 +58,7 @@ public class Clashing : MonoBehaviour
             if (playerTargetingSystem.CharacterTargets.ContainsKey(character) &&
                 playerTargetingSystem.CharacterTargets[character] == enemy)
             {
-                //Debug.Log($"{enemy.name} target in EnemyTargetingSystem matches their character");
+                //Debug.Log($"{enemy.name}'s target in EnemyTargetingSystem matches their character in PlayerTargetingSystem.");
 
                 if (!_clashingEntities.ContainsKey(enemy))
                 {
@@ -110,21 +109,6 @@ public class Clashing : MonoBehaviour
                 }
             }
         }
-    }
-
-    public bool AreEntitiesClashing(GameObject character, GameObject enemy)
-    {
-        if (_clashingEntities.ContainsKey(character) && _clashingEntities[character] == enemy)
-        {
-            return true;
-        }
-
-        if (_clashingEntities.ContainsKey(enemy) && _clashingEntities[enemy] == character)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     private bool IsOtherCharacterTargeting(GameObject enemy)
