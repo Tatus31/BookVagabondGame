@@ -1,3 +1,4 @@
+using LiteDB;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ public class Clashing : MonoBehaviour
 
     private Dictionary<GameObject, GameObject> _clashingEntities = new Dictionary<GameObject, GameObject>();
     public Dictionary<GameObject, GameObject> ClashingEntities { get { return _clashingEntities; } }
+
+    public Dictionary<GameObject, GameObject> EntitiesThatAlreadyClashed = new Dictionary<GameObject, GameObject>();
 
     private void Awake()
     {
@@ -110,6 +113,37 @@ public class Clashing : MonoBehaviour
             }
         }
     }
+
+    public bool AreEntitiesClashing(GameObject character, GameObject enemy)
+    {
+        if (_clashingEntities.ContainsKey(character) && _clashingEntities[character] == enemy)
+        {
+            return true;
+        }
+
+        if (_clashingEntities.ContainsKey(enemy) && _clashingEntities[enemy] == character)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool DidEntitiesAlreadyClash(GameObject character, GameObject enemy)
+    {
+        if(EntitiesThatAlreadyClashed.ContainsKey(character) && EntitiesThatAlreadyClashed[character] == enemy)
+        { 
+            return true; 
+        }
+
+        if (EntitiesThatAlreadyClashed.ContainsKey(enemy) && EntitiesThatAlreadyClashed[enemy] == character)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 
     private bool IsOtherCharacterTargeting(GameObject enemy)
     {

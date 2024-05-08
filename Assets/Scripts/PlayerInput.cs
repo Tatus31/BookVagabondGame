@@ -11,10 +11,10 @@ public class PlayerInput : MonoBehaviour
     private bool _leftClickUp;
     private bool _rightClickClicked;
 
-    public bool LeftClickClicked {get { return _leftClickClicked;} private set { _leftClickClicked = value; } }
-    public bool RightClickClicked { get { return _rightClickClicked; } private set { _rightClickClicked = value; } }
-    public bool LeftClickHeld { get { return _leftClickHeld; } private set { _leftClickHeld = value; } }
-    public bool LeftClickUp { get { return _leftClickUp; } private set { _leftClickUp = value; } }
+    public bool LeftClickClicked {get { return _leftClickClicked;} set { _leftClickClicked = value; } }
+    public bool RightClickClicked { get { return _rightClickClicked; } set { _rightClickClicked = value; } }
+    public bool LeftClickHeld { get { return _leftClickHeld; } set { _leftClickHeld = value; } }
+    public bool LeftClickUp { get { return _leftClickUp; } set { _leftClickUp = value; } }
 
     private void Awake()
     {

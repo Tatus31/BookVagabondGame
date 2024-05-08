@@ -80,6 +80,11 @@ public class Movement : MonoBehaviour
             GameObject currentEntity = entityWithSpeed.Entity;
             GameObject target = GetTargetForEntity(currentEntity);
 
+            if(clashing.DidEntitiesAlreadyClash(currentEntity, target))
+            {
+                continue;
+            }
+
             if (target != null)
             {
                 Transform entityTransform = currentEntity.transform;
@@ -91,14 +96,42 @@ public class Movement : MonoBehaviour
 
                     if (distanceToTarget <= stoppingDistance)
                     {
+                        if (PlayerInput.Instance.LeftClickClicked && !AttackDistanceCheck.instance.HasEntityAttacked(currentEntity, target) && !clashing.AreEntitiesClashing(currentEntity, target))
+                        {
+                            Debug.Log($"{currentEntity} Attacked!");
+                            AttackDistanceCheck.instance.EntityAttack(currentEntity, target);
+
+                            PlayerInput.Instance.LeftClickClicked = false;
+                        }
+                        else if (PlayerInput.Instance.LeftClickClicked && clashing.AreEntitiesClashing(currentEntity, target))
+                        {
+                            Debug.Log($"{currentEntity} and {target} are attacking eachother!");
+
+                            // get right direction 
+
+                            //KnockBack.Instance.KnockBackEntity(currentEntity, -targetTransform.position);
+                            //KnockBack.Instance.KnockBackEntity(target, -entityTransform.position);
+
+                            clashing.EntitiesThatAlreadyClashed.Add(currentEntity, target);
+
+                            AttackDistanceCheck.instance.EntityAttack(currentEntity, target);
+                            AttackDistanceCheck.instance.EntityAttack(target, currentEntity);
+                        }
+
+
+                        if (!AttackDistanceCheck.instance.HasEntityAttacked(currentEntity, target) && !AttackDistanceCheck.instance.HasEntityAttacked(target, currentEntity))
+                        {
+                            yield return null;
+                            continue;
+                        }
+
                         break;
                     }
+                    float movementStep = moveSpeed * Time.deltaTime;
 
                     Vector3 targetPosition = targetTransform.position;
                     targetPosition.y = entityTransform.position.y;
                     Vector3 direction = (targetPosition - entityTransform.position).normalized;
-
-                    float movementStep = moveSpeed * Time.deltaTime;
 
                     if (movementStep > distanceToTarget)
                     {
@@ -116,20 +149,21 @@ public class Movement : MonoBehaviour
                     {
                         Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
 
-                        Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
+                          Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
 
-                        float reverseMovementStep = moveSpeed * Time.deltaTime;
+                          float reverseMovementStep = moveSpeed * Time.deltaTime;
 
-                        if (reverseMovementStep > distanceToTarget)
-                        {
-                            targetTransform.position = entityTransform.position;
-                        }
-                        else
-                        {
-                            Vector3 newTargetPosition = targetTransform.position + reverseDirection * reverseMovementStep;
-                            newTargetPosition.y = targetTransform.position.y;
-                            targetTransform.position = newTargetPosition;
-                        }
+                          if (reverseMovementStep > distanceToTarget)
+                          {
+                                targetTransform.position = entityTransform.position;
+                          }
+                          else
+                          {
+                              Vector3 newTargetPosition = targetTransform.position + reverseDirection * reverseMovementStep;
+                              newTargetPosition.y = targetTransform.position.y;
+                              targetTransform.position = newTargetPosition;
+                          }
+
                     }
 
                     yield return null;
