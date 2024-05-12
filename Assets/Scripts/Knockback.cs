@@ -6,9 +6,10 @@ public class KnockBack : MonoBehaviour
 {
     public static KnockBack Instance;
 
-    [SerializeField] private float knockbackAmmount;
-    [SerializeField] private Transform knockbackDirection;
-    [SerializeField] private Transform enemyKnockbackDirection;
+    [SerializeField] private float knockbackDistance;
+    [SerializeField] private float knockbackSpeed;
+    [SerializeField] private AnimationCurve knockbackCurve;
+
     private void Awake()
     {
         Instance = this;
@@ -16,26 +17,30 @@ public class KnockBack : MonoBehaviour
 
     public void KnockBackEntity(GameObject entity, Vector3 direction)
     {
-        entity.transform.position += direction;
+        StartCoroutine(ApplyKnockBack(entity, direction));
     }
 
-    public bool HasBeenKnockedBack(GameObject entity)
+    private IEnumerator ApplyKnockBack(GameObject entity, Vector3 direction)
     {
-        if (AttackDistanceCheck.instance.EntitiesThatAttacked.ContainsKey(entity) || AttackDistanceCheck.instance.EntitiesThatAttacked.ContainsValue(entity))
+        Vector3 startPosition = entity.transform.position;
+        Vector3 targetPosition = startPosition + direction * knockbackDistance;
+
+        float movedDistance = 0f;
+        float totalDistance = knockbackDistance;
+
+        while (movedDistance < totalDistance)
         {
-            return true;
+            float progress = movedDistance / totalDistance;
+            float slowdownFactor = knockbackCurve.Evaluate(progress);
+            float movementStep = Time.deltaTime / knockbackSpeed * slowdownFactor;
+
+            entity.transform.position += direction * movementStep;
+            movedDistance += movementStep;
+
+            yield return null;
         }
 
-        return false;
+        entity.transform.position = targetPosition;
     }
 
-    public Vector3 GetCharacterKnockbackDirection()
-    {
-        return knockbackDirection.position;
-    }
-
-    public Vector3 GetEnemyKnockbackDirection()
-    {
-        return enemyKnockbackDirection.position;
-    }
 }

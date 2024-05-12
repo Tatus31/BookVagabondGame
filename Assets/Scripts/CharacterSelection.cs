@@ -21,6 +21,7 @@ public class CharacterSelection : MonoBehaviour
     {
         if (PlayerInput.Instance.LeftClickClicked)
         {
+            SelectSkillSlot();
             SelectCharacter();
         }
         else if (PlayerInput.Instance.RightClickClicked)
@@ -32,7 +33,7 @@ public class CharacterSelection : MonoBehaviour
     private void SelectCharacter()
     {
         GameObject character = SelectionCheck();
-        if (character != null && IsCharacterSelected())
+        if (character != null && IsCharacterSelected() && character.tag == "Character")
         {
             selectedCharacters.Add(character);
             UpdateCharacterSelectedStatus();
@@ -48,7 +49,6 @@ public class CharacterSelection : MonoBehaviour
             UpdateCharacterSelectedStatus();
         }
     }
-
 
     private bool IsCharacterSelected()
     {
@@ -67,6 +67,15 @@ public class CharacterSelection : MonoBehaviour
             _currentCharacterSelected = null;
         }
     }
+    private void SelectSkillSlot()
+    {
+        GameObject skillSlot = CharacterSelection.Instance.SelectionCheck();
+
+        if (skillSlot != null && skillSlot.tag == "SkillSlot")
+        {
+            Debug.Log($"Selected SkillSlot for {skillSlot.transform.parent.name}");
+        }
+    }
 
     public GameObject SelectionCheck()
     {
@@ -78,7 +87,7 @@ public class CharacterSelection : MonoBehaviour
             Transform objectHit = hit.transform;
             while (objectHit != null)
             {
-                if (objectHit.gameObject.CompareTag("Character") || objectHit.gameObject.CompareTag("Enemy"))
+                if (objectHit.gameObject.CompareTag("Character") || objectHit.gameObject.CompareTag("Enemy") || objectHit.gameObject.CompareTag("SkillSlot"))
                 {
                     return objectHit.gameObject;
                 }
@@ -88,7 +97,6 @@ public class CharacterSelection : MonoBehaviour
 
         return null;
     }
-
 
     public Vector3 GetSelectedCharacterPosition()
     {

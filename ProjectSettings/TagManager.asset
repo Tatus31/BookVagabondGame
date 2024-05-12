@@ -8,6 +8,8 @@ TagManager:
   - Character
   - Mouse
   - Enemy
+  - SkillSlot
+  - Testing
   layers:
   - Default
   - TransparentFX

@@ -96,9 +96,15 @@ public class Movement : MonoBehaviour
 
                     if (distanceToTarget <= stoppingDistance)
                     {
+                        Vector3 entityKnockbackDirection = (entityTransform.position - targetTransform.position).normalized;
+                        Vector3 targetKnockbackDirection = (targetTransform.position - entityTransform.position).normalized;
+
                         if (PlayerInput.Instance.LeftClickClicked && !AttackDistanceCheck.instance.HasEntityAttacked(currentEntity, target) && !clashing.AreEntitiesClashing(currentEntity, target))
                         {
                             Debug.Log($"{currentEntity} Attacked!");
+
+                            KnockBack.Instance.KnockBackEntity(target, targetKnockbackDirection);
+
                             AttackDistanceCheck.instance.EntityAttack(currentEntity, target);
 
                             PlayerInput.Instance.LeftClickClicked = false;
@@ -107,10 +113,8 @@ public class Movement : MonoBehaviour
                         {
                             Debug.Log($"{currentEntity} and {target} are attacking eachother!");
 
-                            // get right direction 
-
-                            //KnockBack.Instance.KnockBackEntity(currentEntity, -targetTransform.position);
-                            //KnockBack.Instance.KnockBackEntity(target, -entityTransform.position);
+                            KnockBack.Instance.KnockBackEntity(currentEntity, entityKnockbackDirection);
+                            KnockBack.Instance.KnockBackEntity(target, targetKnockbackDirection);
 
                             clashing.EntitiesThatAlreadyClashed.Add(currentEntity, target);
 
@@ -144,10 +148,9 @@ public class Movement : MonoBehaviour
                         entityTransform.position = newPosition;
                     }
 
-                    if (clashing.ClashingEntities.ContainsKey(currentEntity) && clashing.ClashingEntities.ContainsValue(target)
-                       || clashing.ClashingEntities.ContainsKey(target) && clashing.ClashingEntities.ContainsValue(currentEntity))
+                    if (clashing.AreEntitiesClashing(currentEntity, target))
                     {
-                        Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
+                        //Debug.Log($"{currentEntity.name} is Clashing! with {target.name}");
 
                           Vector3 reverseDirection = (entityTransform.position - targetTransform.position).normalized;
 

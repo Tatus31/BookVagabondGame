@@ -86,6 +86,7 @@ public class Tile : MonoBehaviour
             if (characterPrefab != null)
             {
                 GameObject newCharacter = Instantiate(characterPrefab, transform.position, Quaternion.identity);
+                newCharacter.name = $"{characterPrefab.name} {CharactersAndEnemiesList.Instance.characters.Count}";
                 charactersOnTile.Add(newCharacter);
                 CharactersAndEnemiesList.Instance.characters.Add(newCharacter);
             }
