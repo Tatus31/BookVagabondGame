@@ -52,7 +52,7 @@ public class CharacterAndEnemySpeed : MonoBehaviour
     {
         if (entity.GetComponent<CharacterAndEnemySpeed>() == null)
         {
-            Debug.LogWarning("No Entity Speed component on object!");
+            Debug.LogWarning($"No {entity} Speed component on object!");
             return 0;
         }
         else

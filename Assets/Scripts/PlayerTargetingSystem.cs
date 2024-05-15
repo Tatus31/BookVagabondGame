@@ -36,41 +36,42 @@ public class PlayerTargetingSystem : MonoBehaviour
 
     private void SelectEnemy()
     {
-        if (CharacterSelection.Instance == null || CharacterSelection.Instance.CurrentCharacterSelected == null)
+        if (CharacterSelection.Instance == null || SkillSlotSelection.Instance.CurrentSkillSlotSelected == null )
         {
             return;
         }
 
-        GameObject enemy = CharacterSelection.Instance.SelectionCheck();
+        GameObject enemySkillSlot = CharacterSelection.Instance.SelectionCheck();
 
-        GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
+        GameObject selectedSkillSlot = SkillSlotSelection.Instance.CurrentSkillSlotSelected;
 
-        if (_characterTargets.ContainsKey(selectedCharacter))
+        if (_characterTargets.ContainsKey(selectedSkillSlot.transform.parent.gameObject))
         {
-            Debug.Log($"{selectedCharacter.name} is already targeting an enemy.");
+            Debug.Log($"{selectedSkillSlot.transform.parent.gameObject.name} is already targeting an enemy.");
             return;
         }
 
-        if (enemy != null && enemy.CompareTag("Enemy") && selectedCharacter.CompareTag("Character"))
+        if (enemySkillSlot != null && enemySkillSlot.CompareTag("Enemy") && selectedSkillSlot.CompareTag("SkillSlot"))
         {
-            _characterTargets[selectedCharacter] = enemy;
+            _characterTargets[selectedSkillSlot.transform.parent.gameObject] = enemySkillSlot;
             Clashing.Instance.ForceClashingTarget();
-            //Debug.Log($"Selected {selectedCharacter.name} targets enemy {enemy.name}");
+            Debug.Log($"Selected {selectedSkillSlot.transform.parent.gameObject.name} targets enemy {enemySkillSlot.name}");
         }
     }
 
 
     private void DeselectEnemy()
     {
-        GameObject enemy = CharacterSelection.Instance.SelectionCheck();
+        GameObject enemySkillSlot = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemy != null)
+        if (enemySkillSlot != null)
         {
-            GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
-            if (selectedCharacter != null && _characterTargets.ContainsKey(selectedCharacter) && _characterTargets[selectedCharacter] == enemy)
+            GameObject selectedSkillSlot = SkillSlotSelection.Instance.CurrentSkillSlotSelected;
+
+            if (selectedSkillSlot != null && _characterTargets.ContainsKey(selectedSkillSlot.transform.parent.gameObject) && _characterTargets[selectedSkillSlot.transform.parent.gameObject] == enemySkillSlot)
             {
-                _characterTargets.Remove(selectedCharacter);
-                Clashing.Instance.DeselectEnemy(enemy);
+                _characterTargets.Remove(selectedSkillSlot.transform.parent.gameObject);
+                Clashing.Instance.DeselectEnemy(enemySkillSlot);
                 //Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
             }
         }

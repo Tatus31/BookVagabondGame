@@ -39,20 +39,20 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Update()
     {
-        if (CharacterSelection.Instance.CurrentCharacterSelected != null && PlayerTargetingSystem.Instance.CharacterTargets != null)
+        if (SkillSlotSelection.Instance.CurrentSkillSlotSelected != null && PlayerTargetingSystem.Instance.CharacterTargets != null)
         {
 
-            GameObject selectedCharacter = CharacterSelection.Instance.CurrentCharacterSelected;
-            GameObject selectedEnemy = PlayerTargetingSystem.Instance.GetTargetForCharacter(selectedCharacter);
+            GameObject selectedCharacterSkillSlot = SkillSlotSelection.Instance.CurrentSkillSlotSelected;
+            GameObject selectedEnemy = PlayerTargetingSystem.Instance.GetTargetForCharacter(selectedCharacterSkillSlot.transform.parent.gameObject);
 
-            if (selectedCharacter != null && selectedEnemy != null)
+            if (selectedCharacterSkillSlot != null && selectedEnemy != null)
             {
-                if (selectedCharacter != currentCharacter || selectedEnemy != currentEnemy)
+                if (selectedCharacterSkillSlot != currentCharacter || selectedEnemy != currentEnemy)
                 {
-                    currentCharacter = selectedCharacter;
+                    currentCharacter = selectedCharacterSkillSlot;
                     currentEnemy = selectedEnemy;
 
-                    CreateOrUpdateLineRenderer(selectedCharacter, selectedEnemy);
+                    CreateOrUpdateLineRenderer(selectedCharacterSkillSlot, selectedEnemy);
                 }
             }
             else
@@ -64,11 +64,11 @@ public class ArrowDragIndicator : MonoBehaviour
         }
     }
 
-    private void CreateOrUpdateLineRenderer(GameObject characterPosition, GameObject enemyPosition)
+    private void CreateOrUpdateLineRenderer(GameObject characterSkillSlotPosition, GameObject enemyPosition)
     {
         if (this.lineRenderer == null)
         {
-            lineObject = new GameObject("LineRenderer");
+            lineObject = new GameObject("SkillSlotLineRenderer");
             lineObject.transform.SetParent(transform);
             this.lineRenderer = lineObject.AddComponent<LineRenderer>();
             this.lineRenderer.useWorldSpace = true;
@@ -85,9 +85,9 @@ public class ArrowDragIndicator : MonoBehaviour
             }
         }
 
-        CurvePointCalculator(characterPosition, enemyPosition, this.lineRenderer);
+        CurvePointCalculator(characterSkillSlotPosition, enemyPosition, this.lineRenderer);
 
-        currentCharacter = characterPosition;
+        currentCharacter = characterSkillSlotPosition;
         currentEnemy = enemyPosition;
     }
 

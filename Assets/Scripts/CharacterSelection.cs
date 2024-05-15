@@ -21,7 +21,6 @@ public class CharacterSelection : MonoBehaviour
     {
         if (PlayerInput.Instance.LeftClickClicked)
         {
-            SelectSkillSlot();
             SelectCharacter();
         }
         else if (PlayerInput.Instance.RightClickClicked)
@@ -65,15 +64,6 @@ public class CharacterSelection : MonoBehaviour
         else
         {
             _currentCharacterSelected = null;
-        }
-    }
-    private void SelectSkillSlot()
-    {
-        GameObject skillSlot = CharacterSelection.Instance.SelectionCheck();
-
-        if (skillSlot != null && skillSlot.tag == "SkillSlot")
-        {
-            Debug.Log($"Selected SkillSlot for {skillSlot.transform.parent.name}");
         }
     }
 

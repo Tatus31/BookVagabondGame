@@ -190,9 +190,6 @@ public class Movement : MonoBehaviour
         Debug.Log("All targets reached");
     }
 
-
-
-
     private GameObject GetTargetForEntity(GameObject entity)
     {
         if (playerTargetingSystem.CharacterTargets.ContainsKey(entity))
