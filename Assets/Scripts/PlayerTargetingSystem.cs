@@ -92,7 +92,7 @@ public class PlayerTargetingSystem : MonoBehaviour
     }
 
 
-    private void DeselectEnemy()
+    public void DeselectEnemy()
     {
         GameObject enemySkillSlot = CharacterSelection.Instance.SelectionCheck();
 
