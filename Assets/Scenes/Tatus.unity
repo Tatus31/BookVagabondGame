@@ -1826,7 +1826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!135 &1355723327
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2175,8 +2175,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1647650878}
   - component: {fileID: 1647650877}
+  - component: {fileID: 1647650879}
   m_Layer: 0
-  m_Name: CharacterSelection
+  m_Name: Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2211,6 +2212,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 715850910}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1647650879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647650876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55bf1d02baa663a45924c32596c68bec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentSkillSlotSelected: {fileID: 0}
 --- !u!1001 &1706663331
 PrefabInstance:
   m_ObjectHideFlags: 0
