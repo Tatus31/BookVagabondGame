@@ -88,7 +88,7 @@ public class Clashing : MonoBehaviour
                     enemiesAfterTargetChange.Add(target);
                     playerTargetingSystem.LockTarget(target, entity);
 
-                    arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(target, SkillSlotSelection.Instance.GetSkillSlotForCharacter(entity));
+                    arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(target, entity);
                 }
             }          
         }

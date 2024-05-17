@@ -56,7 +56,7 @@ public class EnemyTargetingSystem : MonoBehaviour
                     _originalEnemyTargets.Add(enemy, targetCharacter);
                 }
 
-                arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, SkillSlotSelection.Instance.GetSkillSlotForCharacter(targetCharacter));
+                arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, targetCharacter);
             }
         }
     }

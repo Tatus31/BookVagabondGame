@@ -29,13 +29,11 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void Start()
     {
-        PlayerTargetingSystem.Instance.EnemySelected += OnEnemySelected;
         Movement.Instance.AllTargetsReached += OnAllTargetsReached;
     }
 
     private void OnDestroy()
     {
-        PlayerTargetingSystem.Instance.EnemySelected -= OnEnemySelected;
         Movement.Instance.AllTargetsReached -= OnAllTargetsReached;
     }
 
@@ -87,7 +85,7 @@ public class ArrowDragIndicator : MonoBehaviour
             }
         }
 
-        CurvePointCalculator(characterSkillSlotPosition.transform.position, enemyPosition.transform.position, this.lineRenderer);
+        CurvePointCalculator(characterSkillSlotPosition, enemyPosition, this.lineRenderer);
 
         currentCharacter = characterSkillSlotPosition;
         currentEnemy = enemyPosition;
@@ -125,31 +123,10 @@ public class ArrowDragIndicator : MonoBehaviour
             _enemyLines.Add(enemyPosition, lineRenderer);
         }
 
-        CurvePointCalculator(enemyPosition.transform.position, characterPosition.transform.position, lineRenderer);
+        CurvePointCalculator(enemyPosition, characterPosition, lineRenderer);
     }
 
-    public void FollowMouseLineRenderer(GameObject characterPositon ,Vector3 mousePosition)
-    {
-        if (this.lineRenderer == null)
-        {
-            GameObject lineObject = new GameObject("FollowLineRenderer");
-            this.lineRenderer = lineObject.AddComponent<LineRenderer>();
-            this.lineRenderer.useWorldSpace = true;
-            this.lineRenderer.widthCurve = characterAnimationCurve;
-            this.lineRenderer.numCapVertices = 10;
 
-            if (enemyLineMaterial != null)
-            {
-                this.lineRenderer.material = characterLineMaterial;
-            }
-            else
-            {
-                Debug.LogError("Enemy Line Material is not assigned.");
-            }
-        }
-
-        CurvePointCalculator(characterPositon.transform.position, mousePosition, this.lineRenderer);
-    }
 
     private void RemoveLineRenderer()
     {
@@ -166,28 +143,20 @@ public class ArrowDragIndicator : MonoBehaviour
         DestroyAllLineRenderers();
     }
 
-    private void OnEnemySelected()
-    {
-        if (lineObject != null)
-        {
-            Destroy(lineObject);
-            lineObject = null;
-            lineRenderer = null;
-        }
-
-        CreateOrUpdateLineRenderer(SkillSlotSelection.Instance.CurrentSkillSlotSelected, PlayerTargetingSystem.Instance.GetTargetForCharacter(SkillSlotSelection.Instance.CurrentSkillSlotSelected.transform.parent.gameObject));
-    }
-
     private void DestroyAllLineRenderers()
     {
-        foreach (LineRenderer renderer in FindObjectsOfType<LineRenderer>())
+        LineRenderer[] renderers = FindObjectsOfType<LineRenderer>();
+        foreach (LineRenderer renderer in renderers)
         {
             Destroy(renderer.gameObject);
         }
     }
 
-    private void CurvePointCalculator(Vector3 start, Vector3 end, LineRenderer lineRenderer)
+    private void CurvePointCalculator(GameObject startPosition, GameObject endPosition, LineRenderer lineRenderer)
     {
+        Vector3 start = startPosition.transform.position;
+        Vector3 end = endPosition.transform.position;
+        Vector3 midPoint = (start + end) / 2f;
         float yOffset = 2f;
 
         Vector3 controlPoint1 = start + Vector3.up * yOffset;
