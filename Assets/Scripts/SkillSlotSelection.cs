@@ -14,19 +14,7 @@ public class SkillSlotSelection : MonoBehaviour
         Instance = this;
     }
 
-    private void Update()
-    {
-        if (PlayerInput.Instance.LeftClickClicked)
-        {
-            SelectSkillSlot();
-        }
-
-        if (PlayerInput.Instance.RightClickClicked)
-        {
-            DeselectSkillSlot();
-        }
-    }
-    private void SelectSkillSlot()
+    public void SelectSkillSlot()
     {
         GameObject skillSlot = CharacterSelection.Instance.SelectionCheck();
 
@@ -37,13 +25,29 @@ public class SkillSlotSelection : MonoBehaviour
         }
     }
 
-    private void DeselectSkillSlot()
+    public void DeselectSkillSlot()
     {
-        GameObject skillSlot = CharacterSelection.Instance.SelectionCheck();
+        _currentSkillSlotSelected = null;
+    }
 
-        if (skillSlot != null && _currentSkillSlotSelected != null && skillSlot.tag == "SkillSlot")
+    public GameObject GetSkillSlotForCharacter(GameObject character)
+    {
+        if (character == null)
         {
-            _currentSkillSlotSelected = null;
+            Debug.LogWarning("Character GameObject is null. Cannot find associated skill slot.");
+            return null;
         }
+
+        foreach (Transform child in character.transform)
+        {
+            if (child.CompareTag("SkillSlot"))
+            {
+                GameObject skillSlot = child.gameObject;
+                return skillSlot;
+            }
+        }
+
+        Debug.LogWarning($"No skill slot found for {character.name}.");
+        return null;
     }
 }
