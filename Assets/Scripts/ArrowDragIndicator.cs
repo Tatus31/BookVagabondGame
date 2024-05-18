@@ -98,6 +98,11 @@ public class ArrowDragIndicator : MonoBehaviour
 
     public void CreateOrUpdateEnemyLineRenderer(GameObject enemyPosition, GameObject characterPosition)
     {
+        if (enemyPosition == null || characterPosition == null)
+        {
+            return;
+        }
+
         LineRenderer lineRenderer;
 
         if (_enemyLines.ContainsKey(enemyPosition))
@@ -150,6 +155,14 @@ public class ArrowDragIndicator : MonoBehaviour
 
         CurvePointCalculator(characterPositon.transform.position, mousePosition, this.lineRenderer);
     }
+    public void DestroyFollowMouseLineRenderer()
+    {
+        if (this.lineRenderer != null && this.lineRenderer.gameObject.name == "FollowLineRenderer")
+        {
+            Destroy(this.lineRenderer.gameObject);
+            this.lineRenderer = null;
+        }
+    }
 
     private void RemoveLineRenderer()
     {
@@ -188,7 +201,7 @@ public class ArrowDragIndicator : MonoBehaviour
 
     private void CurvePointCalculator(Vector3 start, Vector3 end, LineRenderer lineRenderer)
     {
-        float yOffset = 2f;
+        float yOffset = 1f;
 
         Vector3 controlPoint1 = start + Vector3.up * yOffset;
         Vector3 controlPoint2 = end + Vector3.up * yOffset;

@@ -57,7 +57,7 @@ public class PlayerTargetingSystem : MonoBehaviour
             SelectEnemy();
         }
 
-        if (PlayerInput.Instance.RightClickClicked)
+        if (PlayerInput.Instance.RightClickClicked && searchEnemy.CompareTag("Enemy"))
         {
             DeselectEnemy();
         }
@@ -96,18 +96,35 @@ public class PlayerTargetingSystem : MonoBehaviour
     {
         GameObject enemySkillSlot = CharacterSelection.Instance.SelectionCheck();
 
-        if (enemySkillSlot != null)
+        if (enemySkillSlot != null && enemySkillSlot.CompareTag("Enemy"))
         {
-            GameObject selectedSkillSlot = CharacterSelection.Instance.CurrentCharacterSelected;
+            GameObject characterTargetingEnemy = null;
 
-            if (selectedSkillSlot != null && _characterTargets.ContainsKey(selectedSkillSlot) && _characterTargets[selectedSkillSlot] == enemySkillSlot)
+            foreach (var characterTarget in _characterTargets)
             {
-                _characterTargets.Remove(selectedSkillSlot);
-                Clashing.Instance.DeselectEnemy(enemySkillSlot);
-                //Debug.Log($"Deselected {selectedCharacter.name} from targeting enemy {enemy.name}");
+                if (characterTarget.Value == enemySkillSlot)
+                {
+                    characterTargetingEnemy = characterTarget.Key;
+                    break;
+                }
+            }
+
+            if (characterTargetingEnemy != null)
+            {
+                _characterTargets.Remove(characterTargetingEnemy);
+
+                if (Clashing.Instance != null)
+                {
+                    Clashing.Instance.DeselectEnemy(enemySkillSlot);
+                }
+
+                arrowDragIndicator.DestroyFollowMouseLineRenderer();
+
+                Debug.Log($"Deselected {characterTargetingEnemy.name} from targeting enemy {enemySkillSlot.name}");
             }
         }
     }
+
 
     public GameObject GetTargetForCharacter(GameObject character)
     {

@@ -66,7 +66,7 @@ public class EnemyTargetingSystem : MonoBehaviour
         if (_enemyTargets.ContainsKey(enemy))
         {
             _enemyTargets[enemy] = newTarget;
-            arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, newTarget);
+            arrowDragIndicator.CreateOrUpdateEnemyLineRenderer(enemy, SkillSlotSelection.Instance.CurrentSkillSlotSelected);
         }
     }
 

@@ -1,4 +1,4 @@
-using LiteDB;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +109,8 @@ public class Clashing : MonoBehaviour
                     enemiesAfterTargetChange.Remove(enemy);
                     playerTargetingSystem.UnlockTarget(enemy);
                     enemyTargetingSystem.SetTarget(enemy, originalTarget);
+
+                    ArrowDragIndicator.Instance.CreateOrUpdateEnemyLineRenderer(enemy, SkillSlotSelection.Instance.GetSkillSlotForCharacter(originalTarget));
                 }
             }
         }

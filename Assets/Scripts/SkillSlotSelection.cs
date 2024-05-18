@@ -19,6 +19,11 @@ public class SkillSlotSelection : MonoBehaviour
         if(PlayerInput.Instance.RightClickClicked && CharacterSelection.Instance.SelectionCheck().CompareTag("SkillSlot"))
         {
             DeselectSkillSlot();
+            //ArrowDragIndicator.Instance.DestroyFollowMouseLineRenderer();
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -36,7 +41,6 @@ public class SkillSlotSelection : MonoBehaviour
     public void DeselectSkillSlot()
     {
         _currentSkillSlotSelected = null;
-        PlayerTargetingSystem.Instance.DeselectEnemy();
     }
 
     public GameObject GetSkillSlotForCharacter(GameObject character)
